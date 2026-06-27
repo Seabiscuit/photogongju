@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%- include('partials/seo-meta', {
-        title: '登录 - PhotoGongju在线证件照制作工具',
-        description: '使用手机号快速登录PhotoGongju，管理您的证件照处理记录、会员权益和订单信息。',
-        keywords: '登录,手机号登录,验证码登录,PhotoGongju',
+        title: t('login.seoTitle'),
+        description: t('login.seoDesc'),
+        keywords: t('login.seoKeywords'),
         noindex: true
     }) %>
     <link rel="stylesheet" href="/css/style.css">
@@ -30,30 +30,21 @@
             border-bottom: 2px solid transparent; margin-bottom: -2px;
             transition: all 0.2s;
         }
-        .login-tab.active { color: #6366f1; border-bottom-color: #6366f1; }
-        .login-tab:hover { color: #4f46e5; }
+        .login-tab.active { color: var(--color-primary); border-bottom-color: var(--color-primary); }
+        .login-tab:hover { color: var(--color-primary-dark); }
+        .form-panel { display: none; }
+        .form-panel.active { display: block; }
 
         .form-group { margin-bottom: 16px; }
         .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #334155; }
-        .input-with-btn { display: flex; gap: 8px; }
-        .input-with-btn input { flex: 1; }
-        .login-card input[type="text"],
+        .login-card input[type="email"],
         .login-card input[type="password"],
-        .login-card input[type="tel"] {
+        .login-card input[type="text"] {
             width: 100%; padding: 12px 14px; border: 1px solid #e2e8f0; border-radius: 8px;
             font-size: 0.95rem; transition: border-color 0.2s; font-family: inherit;
         }
-        .login-card input:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
+        .login-card input:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(14,165,163,0.1); }
         .login-card input::placeholder { color: #94a3b8; }
-
-        .btn-send-code {
-            white-space: nowrap; padding: 12px 18px; border: 1px solid #6366f1; border-radius: 8px;
-            background: #fff; color: #6366f1; font-size: 0.85rem; font-weight: 600;
-            cursor: pointer; transition: all 0.2s; min-width: 110px;
-        }
-        .btn-send-code:hover { background: #eef2ff; }
-        .btn-send-code:disabled { color: #94a3b8; border-color: #cbd5e1; background: #f8fafc; cursor: not-allowed; }
-        .btn-send-code.counting { color: #f59e0b; border-color: #f59e0b; }
 
         .login-error {
             background: #fef2f2; color: #dc2626; border: 1px solid #fecaca;
@@ -63,23 +54,26 @@
             background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0;
             padding: 10px 14px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 16px;
         }
-        .btn-login { width: 100%; padding: 14px; font-size: 1rem; margin-top: 6px; font-weight: 600; }
-        .btn-login:disabled { opacity: 0.6; }
+        .btn-login {
+            width: 100%; padding: 14px; font-size: 1rem; margin-top: 6px; font-weight: 600;
+            background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
+            color: #fff; border: none; border-radius: 8px; cursor: pointer;
+            box-shadow: 0 2px 8px rgba(14,165,163,0.3);
+            transition: all 0.25s;
+        }
+        .btn-login:hover { box-shadow: 0 4px 16px rgba(14,165,163,0.4); transform: translateY(-1px); }
+        .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
 
         .login-footer { text-align: center; margin-top: 20px; font-size: 0.88rem; color: #64748b; }
-        .login-footer a { color: #6366f1; font-weight: 600; }
+        .login-footer a { color: var(--color-primary); font-weight: 600; cursor: pointer; text-decoration: none; }
+        .login-footer a:hover { text-decoration: underline; }
 
         .demo-tip {
             margin-top: 20px; padding: 14px 16px; background: #fffbeb; border: 1px solid #fde68a;
             border-radius: 10px; font-size: 0.8rem; color: #92400e; line-height: 1.6;
         }
         .demo-tip strong { color: #d97706; }
-        .demo-tip code {
-            background: #fef3c7; padding: 2px 6px; border-radius: 4px;
-            font-size: 0.8rem; font-weight: 700; color: #b45309;
-        }
-        .form-panel { display: none; }
-        .form-panel.active { display: block; }
+        .demo-tip code { background: #fef3c7; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; font-weight: 700; color: #b45309; }
     </style>
 </head>
 <body>
@@ -87,83 +81,90 @@
     <nav class="navbar">
         <div class="container">
             <a href="/" class="navbar-brand">
-                <span class="brand-icon">🖼️</span>
+                <span class="brand-icon">📸</span>
                 <span class="brand-text">PhotoGongju</span>
             </a>
             <div class="navbar-links">
-                <a href="/" class="nav-link">首页</a>
-                <a href="/upload" class="nav-link">上传处理</a>
-                <a href="/membership" class="nav-link">会员</a>
+                <a href="/" class="nav-link"><%= t('nav.home') %></a>
+                <a href="/upload" class="nav-link"><%= t('nav.upload') %></a>
+                <a href="/membership" class="nav-link"><%= t('nav.pricing') %></a>
             </div>
         </div>
     </nav>
 
     <div class="login-page-wrap">
         <div class="login-card">
-            <h2 id="cardTitle">欢迎回来</h2>
-            <p class="sub" id="cardSub">使用手机号快速登录</p>
+            <h2 id="cardTitle"><%= t('login.title') %></h2>
+            <p class="sub" id="cardSub"><%= t('login.subtitle') %></p>
 
+            <% if (locals.success) { %>
+                <div class="login-success"><%= success %></div>
+            <% } %>
             <% if (locals.error) { %>
                 <div class="login-error"><%= error %></div>
             <% } %>
 
             <!-- Tab 切换 -->
             <div class="login-tabs">
-                <div class="login-tab active" data-tab="phone" onclick="switchTab('phone')">📱 手机号登录</div>
-                <div class="login-tab" data-tab="password" onclick="switchTab('password')">🔑 密码登录</div>
+                <div class="login-tab active" data-tab="login" onclick="switchTab('login')">🔑 <%= t('login.passwordTab') %></div>
+                <div class="login-tab" data-tab="register" onclick="switchTab('register')">📝 <%= t('login.register') %></div>
             </div>
 
-            <!-- ★ 手机号 + 验证码登录 -->
-            <div class="form-panel active" id="phonePanel">
-                <form method="POST" action="/login" onsubmit="return validatePhoneForm()">
-                    <input type="hidden" name="redirect" value="<%= locals.redirect || '/' %>">
-                    <div class="form-group">
-                        <label>手机号码</label>
-                        <input type="tel" name="phone" id="phoneInput"
-                               placeholder="请输入手机号码" maxlength="11" autocomplete="tel"
-                               pattern="1[3-9]\d{9}" required autofocus>
-                    </div>
-                    <div class="form-group">
-                        <label>验证码</label>
-                        <div class="input-with-btn">
-                            <input type="text" name="code" id="codeInput"
-                                   placeholder="请输入6位验证码" maxlength="6"
-                                   inputmode="numeric" autocomplete="one-time-code" required>
-                            <button type="button" class="btn-send-code" id="sendCodeBtn"
-                                    onclick="sendSmsCode()">获取验证码</button>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-login" id="phoneLoginBtn">
-                        登 录
-                    </button>
-                </form>
-            </div>
-
-            <!-- 用户名 + 密码登录（兼容） -->
-            <div class="form-panel" id="passwordPanel">
+            <!-- ★ 登录面板 -->
+            <div class="form-panel active" id="loginPanel">
                 <form method="POST" action="/login">
                     <input type="hidden" name="redirect" value="<%= locals.redirect || '/' %>">
                     <div class="form-group">
-                        <label>用户名</label>
-                        <input type="text" name="username" placeholder="请输入用户名" required>
+                        <label><%= t('login.email') %></label>
+                        <input type="email" name="email" placeholder="<%= t('login.emailPlaceholder') %>"
+                               autocomplete="email" required autofocus>
                     </div>
                     <div class="form-group">
-                        <label>密码</label>
-                        <input type="password" name="password" placeholder="请输入密码" required>
+                        <label><%= t('login.password') %></label>
+                        <input type="password" name="password" placeholder="<%= t('login.passwordPlaceholder') %>"
+                               autocomplete="current-password" required>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-login">登 录</button>
+                    <button type="submit" class="btn-login"><%= t('login.submit') %></button>
                 </form>
                 <div class="login-footer">
-                    还没有账号？<a href="#" onclick="switchTab('phone')">使用手机号注册/登录</a>
+                    <%= t('login.noAccount') %> <a onclick="switchTab('register')"><%= t('login.register') %></a>
                 </div>
             </div>
 
-            <!-- 开发模式提示 -->
+            <!-- ★ 注册面板 -->
+            <div class="form-panel" id="registerPanel">
+                <form method="POST" action="/register" onsubmit="return validateRegister()">
+                    <div class="form-group">
+                        <label><%= t('login.email') %></label>
+                        <input type="email" name="email" id="regEmail"
+                               placeholder="<%= t('login.emailPlaceholder') %>"
+                               autocomplete="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label><%= t('login.password') %></label>
+                        <input type="password" name="password" id="regPassword"
+                               placeholder="<%= t('login.passwordPlaceholder') %>" minlength="6"
+                               autocomplete="new-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label><%= t('login.confirmPassword') %></label>
+                        <input type="password" name="password2" id="regPassword2"
+                               placeholder="<%= t('login.confirmPasswordPlaceholder') %>" minlength="6"
+                               autocomplete="new-password" required>
+                    </div>
+                    <button type="submit" class="btn-login"><%= t('login.register') %></button>
+                </form>
+                <div class="login-footer">
+                    <%= t('login.hasAccount') %> <a onclick="switchTab('login')"><%= t('login.backLogin') %></a>
+                </div>
+            </div>
+
+            <!-- 演示账号提示 -->
             <div class="demo-tip">
-                <strong>🧪 开发模式提示</strong><br>
-                验证码已设置为固定值: <code>123456</code><br>
-                也可用测试手机号直接登录（自动注册）<br>
-                演示账号: <code>admin</code> / <code>admin123</code>
+                <strong>🧪 <%= t('login.demo') %></strong><br>
+                <%= t('login.demoAccounts') %>:<br>
+                <code>admin@photogongju.com</code> / <code>admin123</code><br>
+                <code>test@photogongju.com</code> / <code>test123</code>
             </div>
         </div>
     </div>
@@ -173,102 +174,38 @@
     </footer>
 
     <script>
-        const SMS_EXPIRE = <%= locals.smsExpire || 300 %>;
-        const SMS_RESEND = <%= locals.smsResend || 60 %>;
-        let countdownTimer = null;
-        let countdownLeft = 0;
-
         function switchTab(tab) {
             document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
             document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
-            document.getElementById('phonePanel').classList.toggle('active', tab === 'phone');
-            document.getElementById('passwordPanel').classList.toggle('active', tab === 'password');
-            document.getElementById('cardSub').textContent = tab === 'phone'
-                ? '使用手机号快速登录'
-                : '使用账号密码登录';
-            if (tab === 'phone') document.getElementById('phoneInput').focus();
+            document.getElementById('loginPanel').classList.toggle('active', tab === 'login');
+            document.getElementById('registerPanel').classList.toggle('active', tab === 'register');
+
+            var lang = '<%= locals.lang %>';
+            if (lang === 'zh') {
+                document.getElementById('cardTitle').textContent = tab === 'login' ? '欢迎回来' : '创建账号';
+                document.getElementById('cardSub').textContent = tab === 'login' ? '登录 PhotoGongju 账号' : '注册 PhotoGongju 账号';
+            } else {
+                document.getElementById('cardTitle').textContent = tab === 'login' ? 'Welcome Back' : 'Create Account';
+                document.getElementById('cardSub').textContent = tab === 'login' ? 'Sign in to PhotoGongju' : 'Register a PhotoGongju account';
+            }
+
+            if (tab === 'register') {
+                setTimeout(() => document.getElementById('regEmail').focus(), 100);
+            }
         }
 
-        function validatePhoneForm() {
-            const phone = document.getElementById('phoneInput').value.trim();
-            const code = document.getElementById('codeInput').value.trim();
-            if (!/^1[3-9]\d{9}$/.test(phone)) {
-                alert('请输入有效的手机号码');
+        function validateRegister() {
+            var pw = document.getElementById('regPassword').value;
+            var pw2 = document.getElementById('regPassword2').value;
+            if (pw.length < 6) {
+                alert('<%= t("login.passwordShort") %>');
                 return false;
             }
-            if (code.length !== 6) {
-                alert('请输入6位验证码');
+            if (pw !== pw2) {
+                alert('<%= t("login.passwordMismatch") %>');
                 return false;
             }
             return true;
-        }
-
-        async function sendSmsCode() {
-            const phone = document.getElementById('phoneInput').value.trim();
-            if (!/^1[3-9]\d{9}$/.test(phone)) {
-                alert('请输入有效的手机号码');
-                document.getElementById('phoneInput').focus();
-                return;
-            }
-
-            const btn = document.getElementById('sendCodeBtn');
-            if (btn.disabled) return;
-
-            btn.disabled = true;
-            btn.textContent = '发送中...';
-
-            try {
-                const res = await fetch('/api/send-sms', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ phone }),
-                });
-                const data = await res.json();
-
-                if (res.ok && data.success) {
-                    // 开始倒计时
-                    countdownLeft = SMS_RESEND;
-                    btn.classList.add('counting');
-                    updateCountdown(btn);
-                    countdownTimer = setInterval(() => updateCountdown(btn), 1000);
-                    // 聚焦验证码输入框
-                    document.getElementById('codeInput').focus();
-                    // 显示成功提示
-                    showFlash('验证码已发送（开发模式: 123456）', 'success');
-                } else {
-                    btn.disabled = false;
-                    btn.textContent = '获取验证码';
-                    alert(data.error || '发送失败，请重试');
-                }
-            } catch (err) {
-                btn.disabled = false;
-                btn.textContent = '获取验证码';
-                alert('网络错误，请检查连接');
-            }
-        }
-
-        function updateCountdown(btn) {
-            if (countdownLeft <= 0) {
-                clearInterval(countdownTimer);
-                btn.classList.remove('counting');
-                btn.disabled = false;
-                btn.textContent = '重新获取';
-                return;
-            }
-            btn.textContent = `${countdownLeft}s 后重发`;
-            countdownLeft--;
-        }
-
-        function showFlash(msg, type) {
-            const existing = document.querySelector('.login-error, .login-success');
-            if (existing) existing.remove();
-            const div = document.createElement('div');
-            div.className = type === 'success' ? 'login-success' : 'login-error';
-            div.textContent = msg;
-            const card = document.querySelector('.login-card');
-            const sub = document.querySelector('.sub');
-            sub.after(div);
-            setTimeout(() => div.remove(), 5000);
         }
     </script>
 </body>
