@@ -275,6 +275,41 @@ const translations = {
         'general.confirm': 'Confirm',
         'general.processing': 'Processing...',
         'general.done': 'Done',
+
+        // Size Library page
+        'sizes.title': 'Size Library',
+        'sizes.subtitle': 'preset sizes across categories — social media, e-commerce, print & more',
+        'sizes.all': 'All',
+        'sizes.colName': 'Name',
+        'sizes.colWidth': 'Width (px)',
+        'sizes.colHeight': 'Height (px)',
+        'sizes.colRatio': 'Ratio',
+        'sizes.colCategory': 'Category',
+
+        // 404 page
+        '404.seoTitle': '404 Page Not Found - PhotoGongju',
+        '404.seoDesc': 'The page you are looking for does not exist. PhotoGongju offers free online ID photo creation.',
+        '404.seoKeywords': '404, page not found, ID photo maker, online ID photo',
+        '404.heading': 'Page Not Found',
+        '404.desc': 'The page you are looking for may have been removed, renamed, or is temporarily unavailable.',
+        '404.suggest': 'Try these popular tools:',
+        '404.home': 'Back to Home',
+        '404.upload': 'ID Photo Maker',
+        '404.tutorial': 'Tutorial Center',
+        '404.photoGuide': 'Photo Taking Guide',
+        '404.bgChange': 'Change Background',
+        '404.visa': 'Visa Photo Guide',
+        '404.sizeLib': 'Size Library',
+
+        // Tutorial page
+        'tutorial.seoTitle': 'ID Photo Tutorial Center - PhotoGongju',
+        'tutorial.seoDesc': 'Free tutorials on taking ID photos, changing backgrounds, cropping, visa photo specs, AI background removal, and more.',
+        'tutorial.seoKeywords': 'ID photo tutorial, how to take ID photo, change background, visa photo, photo crop, AI background removal',
+        'tutorial.heroTitle': 'ID Photo Tutorial Center',
+        'tutorial.heroSubtitle': 'From beginner to pro — free tutorials on shooting, background change, cropping, visa specs and more',
+        'tutorial.breadcrumb': 'Tutorial Center',
+        'tutorial.minRead': 'min read',
+        'tutorial.views': 'views',
     },
 
     zh: {
@@ -548,6 +583,41 @@ const translations = {
         'general.confirm': '确认',
         'general.processing': '处理中...',
         'general.done': '完成',
+
+        // Size Library page
+        'sizes.title': '尺寸规格库',
+        'sizes.subtitle': ' 个预设尺寸 · 覆盖社交媒体、电商、打印等场景',
+        'sizes.all': '全部',
+        'sizes.colName': '名称',
+        'sizes.colWidth': '宽度 (px)',
+        'sizes.colHeight': '高度 (px)',
+        'sizes.colRatio': '比例',
+        'sizes.colCategory': '分类',
+
+        // 404 page
+        '404.seoTitle': '404 页面未找到 - PhotoGongju在线证件照工具',
+        '404.seoDesc': '您访问的页面不存在。PhotoGongju提供免费在线证件照制作，支持一寸二寸照片、换底色、抠图等功能。',
+        '404.seoKeywords': '404,页面未找到,证件照制作,在线证件照',
+        '404.heading': '页面未找到',
+        '404.desc': '您访问的页面可能已被删除、更名或暂时不可用。请尝试以下热门工具页面：',
+        '404.suggest': '请尝试以下热门工具页面：',
+        '404.home': '返回首页',
+        '404.upload': '证件照制作',
+        '404.tutorial': '教程中心',
+        '404.photoGuide': '证件照拍摄教程',
+        '404.bgChange': '换底色教程',
+        '404.visa': '签证照片指南',
+        '404.sizeLib': '尺寸规格大全',
+
+        // Tutorial page
+        'tutorial.seoTitle': '证件照制作教程中心 - 在线证件照拍摄、换底、裁剪、排版指南 | PhotoGongju',
+        'tutorial.seoDesc': 'PhotoGongju证件照教程中心，涵盖在家拍证件照、换底色、尺寸裁剪、签证照片规格、AI抠图、水印添加等全系列免费教程，助你轻松搞定各类证件照。',
+        'tutorial.seoKeywords': '证件照教程,证件照制作教程,如何拍证件照,证件照换底色,证件照尺寸,签证照片教程,照片裁剪教程,AI抠图教程,证件照排版',
+        'tutorial.heroTitle': '证件照制作教程中心',
+        'tutorial.heroSubtitle': '从零基础到专业，涵盖拍摄、换底、裁剪、排版、签证规格等全系列免费教程',
+        'tutorial.breadcrumb': '证件照教程中心',
+        'tutorial.minRead': '分钟',
+        'tutorial.views': '次',
     }
 };
 

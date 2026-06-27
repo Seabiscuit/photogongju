@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%- include('partials/seo-meta', {
-        title: '证件照制作教程中心 - 在线证件照拍摄、换底、裁剪、排版指南 | PhotoGongju',
-        description: 'PhotoGongju证件照教程中心，涵盖在家拍证件照、换底色、尺寸裁剪、签证照片规格、AI抠图、水印添加等全系列免费教程，助你轻松搞定各类证件照。',
-        keywords: '证件照教程,证件照制作教程,如何拍证件照,证件照换底色,证件照尺寸,签证照片教程,照片裁剪教程,AI抠图教程,证件照排版',
+        title: t('tutorial.seoTitle'),
+        description: t('tutorial.seoDesc'),
+        keywords: t('tutorial.seoKeywords'),
         canonical: '/tutorial'
     }) %>
     <link rel="stylesheet" href="/css/style.css">
@@ -57,22 +57,35 @@
             <span class="brand-text">PhotoGongju</span>
         </a>
         <div class="navbar-links">
-            <a href="/" class="nav-link">首页</a>
-            <a href="/upload" class="nav-link">证件照制作</a>
-            <a href="/tutorial" class="nav-link active">教程</a>
-            <a href="/size-library" class="nav-link">尺寸库</a>
+            <a href="/" class="nav-link"><%= t('nav.home') %></a>
+            <a href="/upload" class="nav-link"><%= t('nav.upload') %></a>
+            <a href="/tutorial" class="nav-link active"><%= t('nav.guide') %></a>
+            <a href="/size-library" class="nav-link"><%= t('nav.sizes') %></a>
+        </div>
+        <div class="navbar-actions">
+            <div class="lang-dropdown">
+                <button class="lang-dropdown__toggle" aria-label="Switch language">
+                    <svg class="lang-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                    <span class="lang-current"><%= locals.isZh ? '中文' : 'EN' %></span>
+                    <svg class="lang-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="lang-dropdown__menu">
+                    <button class="lang-dropdown__item <%= locals.isEn ? 'active' : '' %>" onclick="switchLang('en')"><span class="lang-flag">🇺🇸</span> English</button>
+                    <button class="lang-dropdown__item <%= locals.isZh ? 'active' : '' %>" onclick="switchLang('zh')"><span class="lang-flag">🇨🇳</span> 中文</button>
+                </div>
+            </div>
         </div>
     </div>
 </nav>
 
 <section class="tutorial-hero">
-    <h1>证件照制作教程中心</h1>
-    <p>从零基础到专业，涵盖拍摄、换底、裁剪、排版、签证规格等全系列免费教程</p>
+    <h1><%= t('tutorial.heroTitle') %></h1>
+    <p><%= t('tutorial.heroSubtitle') %></p>
 </section>
 
 <!-- 面包屑导航（SEO友好） -->
 <div class="breadcrumb">
-    <a href="/">首页</a><span>›</span><strong>证件照教程中心</strong>
+    <a href="/"><%= t('nav.home') %></a><span>›</span><strong><%= t('tutorial.breadcrumb') %></strong>
 </div>
 
 <div class="tutorial-grid">

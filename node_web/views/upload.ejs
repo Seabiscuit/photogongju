@@ -22,19 +22,30 @@
                 <span class="brand-text">PhotoGongju</span>
             </a>
             <div class="navbar-links">
-                <a href="/" class="nav-link <%= (locals.activeNav || '') === 'home' ? 'active' : '' %>">首页</a>
-                <a href="/upload" class="nav-link <%= (locals.activeNav || '') === 'upload' ? 'active' : '' %>">上传处理</a>
-                <a href="/size-library" class="nav-link <%= (locals.activeNav || '') === 'size-library' ? 'active' : '' %>">尺寸库</a>
-                <a href="/membership" class="nav-link <%= (locals.activeNav || '') === 'membership' ? 'active' : '' %>">会员</a>
+                <a href="/" class="nav-link <%= (locals.activeNav || '') === 'home' ? 'active' : '' %>"><%= t('nav.home') %></a>
+                <a href="/upload" class="nav-link <%= (locals.activeNav || '') === 'upload' ? 'active' : '' %>"><%= t('nav.upload') %></a>
+                <a href="/size-library" class="nav-link <%= (locals.activeNav || '') === 'size-library' ? 'active' : '' %>"><%= t('nav.sizes') %></a>
+                <a href="/membership" class="nav-link <%= (locals.activeNav || '') === 'membership' ? 'active' : '' %>"><%= t('nav.pricing') %></a>
             </div>
-            <div class="navbar-status">
+            <div class="navbar-actions">
+                <div class="lang-dropdown">
+                    <button class="lang-dropdown__toggle" aria-label="Switch language">
+                        <svg class="lang-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                        <span class="lang-current"><%= locals.isZh ? '中文' : 'EN' %></span>
+                        <svg class="lang-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </button>
+                    <div class="lang-dropdown__menu">
+                        <button class="lang-dropdown__item <%= locals.isEn ? 'active' : '' %>" onclick="switchLang('en')"><span class="lang-flag">🇺🇸</span> English</button>
+                        <button class="lang-dropdown__item <%= locals.isZh ? 'active' : '' %>" onclick="switchLang('zh')"><span class="lang-flag">🇨🇳</span> 中文</button>
+                    </div>
+                </div>
                 <% if (locals.isLoggedIn) { %>
                     <span class="user-badge <%= locals.isVip ? 'is-vip' : '' %>">
                         <%= locals.isVip ? '👑' : '👤' %> <%= locals.user.name %>
                     </span>
-                    <a href="/logout" class="nav-link logout-link">退出</a>
+                    <a href="/logout" class="btn btn-sm btn-outline"><%= locals.t('nav.logout') %></a>
                 <% } else { %>
-                    <a href="/login" class="nav-link login-link">登录</a>
+                    <a href="/login" class="btn btn-sm btn-outline"><%= locals.t('nav.login') %></a>
                 <% } %>
             </div>
         </div>

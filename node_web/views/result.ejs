@@ -21,9 +21,9 @@
                 <span class="brand-text">PhotoGongju</span>
             </a>
             <div class="navbar-links">
-                <a href="/" class="nav-link <%= (locals.activeNav || '') === 'home' ? 'active' : '' %>">首页</a>
-                <a href="/upload" class="nav-link <%= (locals.activeNav || '') === 'upload' ? 'active' : '' %>">上传处理</a>
-                <a href="/size-library" class="nav-link <%= (locals.activeNav || '') === 'size-library' ? 'active' : '' %>">尺寸库</a>
+                <a href="/" class="nav-link <%= (locals.activeNav || '') === 'home' ? 'active' : '' %>"><%= t('nav.home') %></a>
+                <a href="/upload" class="nav-link <%= (locals.activeNav || '') === 'upload' ? 'active' : '' %>"><%= t('nav.upload') %></a>
+                <a href="/size-library" class="nav-link <%= (locals.activeNav || '') === 'size-library' ? 'active' : '' %>"><%= t('nav.sizes') %></a>
             </div>
         </div>
     </nav>

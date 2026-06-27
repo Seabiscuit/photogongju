@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%- include('partials/seo-meta', {
-        title: '404 页面未找到 - PhotoGongju在线证件照工具',
-        description: '您访问的页面不存在。PhotoGongju提供免费在线证件照制作，支持一寸二寸照片、换底色、抠图等功能。',
-        keywords: '404,页面未找到,证件照制作,在线证件照',
+        title: t('404.seoTitle'),
+        description: t('404.seoDesc'),
+        keywords: t('404.seoKeywords'),
         noindex: true
     }) %>
     <link rel="stylesheet" href="/css/style.css">
@@ -21,7 +21,7 @@
             background: #fff; border-radius: 16px; padding: 60px 40px;
             max-width: 600px; width: 100%; box-shadow: 0 8px 30px rgba(0,0,0,0.1);
         }
-        .error-code { font-size: 6rem; font-weight: 900; color: #6366f1; line-height: 1; margin-bottom: 8px; }
+        .error-code { font-size: 6rem; font-weight: 900; color: var(--color-primary); line-height: 1; margin-bottom: 8px; }
         .error-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 12px; color: #1e293b; }
         .error-desc { color: #64748b; font-size: 0.95rem; line-height: 1.8; margin-bottom: 32px; }
         .error-links { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
@@ -31,8 +31,8 @@
             font-size: 0.9rem; transition: all 0.2s;
         }
         .error-link-card:hover {
-            border-color: #6366f1; background: #eef2ff; text-decoration: none;
-            transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99,102,241,0.12);
+            border-color: var(--color-primary); background: #e6fffa; text-decoration: none;
+            transform: translateY(-2px); box-shadow: 0 4px 12px rgba(14,165,163,0.12);
         }
         .error-link-card .icon { font-size: 1.2rem; margin-right: 4px; }
     </style>
@@ -42,34 +42,44 @@
 <nav class="navbar">
     <div class="container">
         <a href="/" class="navbar-brand">
-            <span class="brand-icon">🖼️</span>
+            <span class="brand-icon">📸</span>
             <span class="brand-text">PhotoGongju</span>
         </a>
+        <div class="navbar-actions">
+            <div class="lang-dropdown">
+                <button class="lang-dropdown__toggle" aria-label="Switch language">
+                    <svg class="lang-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                    <span class="lang-current"><%= locals.isZh ? '中文' : 'EN' %></span>
+                    <svg class="lang-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="lang-dropdown__menu">
+                    <button class="lang-dropdown__item <%= locals.isEn ? 'active' : '' %>" onclick="switchLang('en')"><span class="lang-flag">🇺🇸</span> English</button>
+                    <button class="lang-dropdown__item <%= locals.isZh ? 'active' : '' %>" onclick="switchLang('zh')"><span class="lang-flag">🇨🇳</span> 中文</button>
+                </div>
+            </div>
+        </div>
     </div>
 </nav>
 
 <div class="error-404-wrap">
     <div class="error-404-card">
         <div class="error-code">404</div>
-        <h1 class="error-title">页面未找到</h1>
-        <p class="error-desc">
-            您访问的页面可能已被删除、更名或暂时不可用。<br>
-            请尝试以下热门工具页面：
-        </p>
+        <h1 class="error-title"><%= t('404.heading') %></h1>
+        <p class="error-desc"><%= t('404.desc') %></p>
         <div class="error-links">
-            <a href="/" class="error-link-card"><span class="icon">🏠</span> 返回首页</a>
-            <a href="/upload" class="error-link-card"><span class="icon">📷</span> 证件照制作</a>
-            <a href="/tutorial" class="error-link-card"><span class="icon">📖</span> 教程中心</a>
-            <a href="/tutorial/how-to-take-id-photo" class="error-link-card"><span class="icon">🎓</span> 证件照拍摄教程</a>
-            <a href="/tutorial/change-background" class="error-link-card"><span class="icon">🎨</span> 换底色教程</a>
-            <a href="/tutorial/visa-photo-guide" class="error-link-card"><span class="icon">✈️</span> 签证照片指南</a>
-            <a href="/size-library" class="error-link-card"><span class="icon">📐</span> 尺寸规格大全</a>
+            <a href="/" class="error-link-card"><span class="icon">🏠</span> <%= t('404.home') %></a>
+            <a href="/upload" class="error-link-card"><span class="icon">📷</span> <%= t('404.upload') %></a>
+            <a href="/tutorial" class="error-link-card"><span class="icon">📖</span> <%= t('404.tutorial') %></a>
+            <a href="/tutorial/how-to-take-id-photo" class="error-link-card"><span class="icon">🎓</span> <%= t('404.photoGuide') %></a>
+            <a href="/tutorial/change-background" class="error-link-card"><span class="icon">🎨</span> <%= t('404.bgChange') %></a>
+            <a href="/tutorial/visa-photo-guide" class="error-link-card"><span class="icon">✈️</span> <%= t('404.visa') %></a>
+            <a href="/size-library" class="error-link-card"><span class="icon">📐</span> <%= t('404.sizeLib') %></a>
         </div>
     </div>
 </div>
 
 <footer class="footer">
-    <div class="container"><p>&copy; 2024 PhotoGongju — 在线证件照制作工具</p></div>
+    <div class="container"><p><%= t('footer.copyright') %></p></div>
 </footer>
 
     <script src="/js/lang.js"></script>

@@ -80,25 +80,38 @@
             <span class="brand-text">PhotoGongju</span>
         </a>
         <div class="navbar-links">
-            <a href="/" class="nav-link">首页</a>
-            <a href="/upload" class="nav-link">证件照制作</a>
-            <a href="/tutorial" class="nav-link active">教程</a>
-            <a href="/size-library" class="nav-link">尺寸库</a>
+            <a href="/" class="nav-link"><%= t('nav.home') %></a>
+            <a href="/upload" class="nav-link"><%= t('nav.upload') %></a>
+            <a href="/tutorial" class="nav-link active"><%= t('nav.guide') %></a>
+            <a href="/size-library" class="nav-link"><%= t('nav.sizes') %></a>
+        </div>
+        <div class="navbar-actions">
+            <div class="lang-dropdown">
+                <button class="lang-dropdown__toggle" aria-label="Switch language">
+                    <svg class="lang-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                    <span class="lang-current"><%= locals.isZh ? '中文' : 'EN' %></span>
+                    <svg class="lang-chevron" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="lang-dropdown__menu">
+                    <button class="lang-dropdown__item <%= locals.isEn ? 'active' : '' %>" onclick="switchLang('en')"><span class="lang-flag">🇺🇸</span> English</button>
+                    <button class="lang-dropdown__item <%= locals.isZh ? 'active' : '' %>" onclick="switchLang('zh')"><span class="lang-flag">🇨🇳</span> 中文</button>
+                </div>
+            </div>
         </div>
     </div>
 </nav>
 
 <div class="tutorial-detail-wrap">
     <div class="breadcrumb">
-        <a href="/">首页</a> › <a href="/tutorial">教程中心</a> › <strong><%= locals.tutorialTitle || '教程详情' %></strong>
+        <a href="/"><%= t('nav.home') %></a> › <a href="/tutorial"><%= t('tutorial.breadcrumb') %></a> › <strong><%= locals.tutorialTitle || t('nav.guide') %></strong>
     </div>
 
     <article>
-        <h1><%= locals.tutorialTitle || '教程详情' %></h1>
+        <h1><%= locals.tutorialTitle || t('nav.guide') %></h1>
         <div class="meta">
-            <span>📅 更新于 <%= locals.updateDate || '2024-06-25' %></span>
-            <span>📖 阅读约 <%= locals.readTime || '5' %> 分钟</span>
-            <span>👁️ 已阅读 <%= locals.viewCount || '1,280' %> 次</span>
+            <span>📅 <%= locals.updateDate || '2024-06-25' %></span>
+            <span>📖 <%= locals.readTime || '5' %> <%= t('tutorial.minRead') %></span>
+            <span>👁️ <%= locals.viewCount || '1,280' %> <%= t('tutorial.views') %></span>
         </div>
 
         <!-- ★ CTA 内链: 引导到证件照制作工具页 -->

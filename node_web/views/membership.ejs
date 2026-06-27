@@ -106,10 +106,10 @@
                 <span class="brand-text">PhotoGongju</span>
             </a>
             <div class="navbar-links">
-                <a href="/" class="nav-link">首页</a>
-                <a href="/upload" class="nav-link">上传处理</a>
-                <a href="/size-library" class="nav-link">尺寸库</a>
-                <a href="/membership" class="nav-link active">会员</a>
+                <a href="/" class="nav-link"><%= t('nav.home') %></a>
+                <a href="/upload" class="nav-link"><%= t('nav.upload') %></a>
+                <a href="/size-library" class="nav-link"><%= t('nav.sizes') %></a>
+                <a href="/membership" class="nav-link active"><%= t('nav.pricing') %></a>
             </div>
             <div class="navbar-status">
                 <% if (locals.isLoggedIn) { %>
