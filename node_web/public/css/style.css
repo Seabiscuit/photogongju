@@ -73,6 +73,53 @@ img{max-width:100%;height:auto}
 }
 .nav-link:hover,.nav-link.active{background:rgba(14,165,163,0.08);color:var(--color-primary);text-decoration:none}
 .navbar-actions{margin-left:auto;display:flex;align-items:center;gap:12px}
+
+/* ── Language Dropdown ── */
+.lang-dropdown{position:relative;display:inline-block}
+.lang-dropdown__toggle{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:7px 14px;border-radius:50px;
+    background:linear-gradient(135deg,rgba(14,165,163,0.08),rgba(20,184,166,0.05));
+    color:var(--color-primary);border:1.5px solid rgba(14,165,163,0.2);
+    font-size:0.85rem;font-weight:600;cursor:pointer;
+    transition:all 0.25s;font-family:inherit;
+}
+.lang-dropdown__toggle:hover{
+    background:linear-gradient(135deg,var(--color-primary-light),var(--color-primary));
+    color:#fff;border-color:transparent;
+    box-shadow:0 2px 12px rgba(14,165,163,0.35);
+}
+.lang-icon{flex-shrink:0}
+.lang-current{min-width:22px;text-align:center}
+.lang-chevron{flex-shrink:0;transition:transform 0.25s}
+.lang-dropdown:hover .lang-chevron{transform:rotate(180deg)}
+.lang-dropdown__menu{
+    position:absolute;top:calc(100% + 6px);right:0;
+    background:#fff;border-radius:var(--radius-sm);
+    box-shadow:0 8px 32px rgba(0,0,0,0.12);
+    border:1px solid var(--color-border);
+    min-width:140px;padding:6px;z-index:100;
+    opacity:0;visibility:hidden;transform:translateY(-8px);
+    transition:all 0.2s ease;
+}
+.lang-dropdown:hover .lang-dropdown__menu{
+    opacity:1;visibility:visible;transform:translateY(0);
+}
+.lang-dropdown__item{
+    display:flex;align-items:center;gap:8px;
+    width:100%;padding:8px 12px;border-radius:6px;
+    font-size:0.87rem;font-weight:500;color:var(--color-text);
+    background:transparent;border:none;cursor:pointer;
+    transition:all 0.15s;font-family:inherit;text-align:left;
+}
+.lang-dropdown__item:hover{
+    background:rgba(14,165,163,0.08);color:var(--color-primary);
+}
+.lang-dropdown__item.active{
+    background:linear-gradient(135deg,rgba(14,165,163,0.12),rgba(20,184,166,0.08));
+    color:var(--color-primary);font-weight:600;
+}
+.lang-flag{font-size:1rem}
 .navbar-status{font-size:0.85rem;display:flex;align-items:center;gap:6px;color:var(--color-text-secondary)}
 .status-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
 .status-dot.online{background:var(--color-success);box-shadow:0 0 6px var(--color-success)}
