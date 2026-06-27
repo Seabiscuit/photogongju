@@ -105,26 +105,81 @@ router.get('/result/:taskId', async (req, res) => {
 // 尺寸库页面
 // ============================================
 
+// 内置回退数据（Python 服务不可用时使用）
+const FALLBACK_SIZE_LIBRARY = {
+    presets: [
+        // 社交媒体
+        { name:"instagram_square", label:"Instagram 正方形", width:1080, height:1080, category:"社交媒体" },
+        { name:"instagram_portrait", label:"Instagram 竖版", width:1080, height:1350, category:"社交媒体" },
+        { name:"instagram_story", label:"Instagram 快拍", width:1080, height:1920, category:"社交媒体" },
+        { name:"facebook_post", label:"Facebook 帖子", width:1200, height:630, category:"社交媒体" },
+        { name:"twitter_post", label:"Twitter/X 帖子", width:1200, height:675, category:"社交媒体" },
+        { name:"linkedin_post", label:"LinkedIn 帖子", width:1200, height:627, category:"社交媒体" },
+        { name:"pinterest_pin", label:"Pinterest 图钉", width:1000, height:1500, category:"社交媒体" },
+        { name:"wechat_moment", label:"微信朋友圈", width:1080, height:1080, category:"社交媒体" },
+        { name:"weibo_post", label:"微博配图", width:1200, height:1200, category:"社交媒体" },
+        { name:"xiaohongshu", label:"小红书封面", width:1080, height:1440, category:"社交媒体" },
+        { name:"douyin_cover", label:"抖音封面", width:1080, height:1920, category:"社交媒体" },
+        // 电商
+        { name:"taobao_main", label:"淘宝主图", width:800, height:800, category:"电商" },
+        { name:"taobao_detail", label:"淘宝详情图", width:750, height:1000, category:"电商" },
+        { name:"jd_main", label:"京东主图", width:800, height:800, category:"电商" },
+        { name:"pdd_main", label:"拼多多主图", width:800, height:800, category:"电商" },
+        { name:"amazon_main", label:"Amazon 主图", width:2000, height:2000, category:"电商" },
+        { name:"shopify_product", label:"Shopify 产品图", width:2048, height:2048, category:"电商" },
+        // 视频封面
+        { name:"youtube_thumbnail", label:"YouTube 缩略图", width:1280, height:720, category:"视频封面" },
+        { name:"bilibili_cover", label:"B站封面", width:1920, height:1080, category:"视频封面" },
+        // 证件照
+        { name:"id_1inch", label:"一寸照", width:295, height:413, category:"证件照" },
+        { name:"id_2inch", label:"二寸照", width:413, height:579, category:"证件照" },
+        { name:"id_passport_cn", label:"中国护照", width:390, height:567, category:"证件照" },
+        { name:"id_visa_us", label:"美国签证", width:600, height:600, category:"证件照" },
+        { name:"id_card_cn", label:"身份证照", width:358, height:441, category:"证件照" },
+        // 打印
+        { name:"print_a4_300dpi", label:"A4 打印 (300dpi)", width:2480, height:3508, category:"打印" },
+        { name:"print_a3_300dpi", label:"A3 打印 (300dpi)", width:3508, height:4961, category:"打印" },
+        { name:"print_4x6", label:"4×6 照片", width:1200, height:1800, category:"打印" },
+        { name:"print_5x7", label:"5×7 照片", width:1500, height:2100, category:"打印" },
+        { name:"print_8x10", label:"8×10 照片", width:2400, height:3000, category:"打印" },
+        // 网页
+        { name:"web_hero_banner", label:"网页 Hero 横幅", width:1920, height:800, category:"网页" },
+        { name:"web_og_image", label:"Open Graph 图", width:1200, height:630, category:"网页" },
+        { name:"web_favicon", label:"网站 Favicon", width:256, height:256, category:"网页" },
+        { name:"web_logo_square", label:"方形 Logo", width:512, height:512, category:"网页" },
+        // 壁纸
+        { name:"wallpaper_iphone15", label:"iPhone 15 壁纸", width:1290, height:2796, category:"壁纸" },
+        { name:"wallpaper_android_hd", label:"安卓 HD 壁纸", width:1080, height:1920, category:"壁纸" },
+        { name:"wallpaper_desktop_1080p", label:"桌面 1080p 壁纸", width:1920, height:1080, category:"壁纸" },
+        { name:"wallpaper_desktop_4k", label:"桌面 4K 壁纸", width:3840, height:2160, category:"壁纸" },
+        // 特殊
+        { name:"golden_ratio_landscape", label:"黄金比例 横版", width:1618, height:1000, category:"特殊" },
+        { name:"golden_ratio_portrait", label:"黄金比例 竖版", width:1000, height:1618, category:"特殊" },
+    ],
+    total: 39,
+};
+
 router.get('/size-library', async (req, res) => {
+    let sizeData = null;
+    let fromFallback = false;
+
     try {
-        const sizeData = await aiService.getSizeLibrary();
-        res.render('index', {
-            title: '尺寸库 - PhotoGongju',
-            subtitle: '50+ 常用图片尺寸预设，覆盖社交媒体、电商、打印等场景',
-            sizeLibrary: sizeData,
-            activeNav: 'size-library',
-            bodyClass: 'page-size-library',
-        });
+        sizeData = await aiService.getSizeLibrary();
     } catch (err) {
-        console.error('[ERROR] 获取尺寸库失败:', err.message);
-        res.render('index', {
-            title: '尺寸库 - PhotoGongju',
-            subtitle: '图片尺寸预设库',
-            sizeLibrary: null,
-            activeNav: 'size-library',
-            bodyClass: 'page-size-library',
-        });
+        console.error('[WARN] Python 服务不可用，使用本地尺寸库:', err.message);
+        sizeData = FALLBACK_SIZE_LIBRARY;
+        fromFallback = true;
     }
+
+    res.render('index', {
+        title: '尺寸库 - PhotoGongju',
+        subtitle: '50+ 常用图片尺寸预设，覆盖社交媒体、电商、打印等场景',
+        sizeLibrary: sizeData,
+        sizeCategories: [...new Set(sizeData.presets.map(p => p.category))],
+        activeNav: 'size-library',
+        bodyClass: 'page-size-library',
+        fromFallback,
+    });
 });
 
 // ============================================

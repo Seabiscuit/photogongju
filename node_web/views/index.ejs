@@ -267,8 +267,48 @@
         </div>
     </section>
 
+    <!-- ═══════════ Size Library ═══════════ -->
+    <% if (locals.activeNav === 'size-library' && locals.sizeLibrary && locals.sizeLibrary.presets) { %>
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title"><%= t('nav.sizes') %></h2>
+            <p class="section-subtitle"><%= locals.sizeLibrary.total %> 个预设尺寸 · <%= locals.sizeCategories.length %> 个分类 · 覆盖社交媒体、电商、打印等场景</p>
+            <div class="size-filter">
+                <button class="size-filter-btn active" onclick="filterSizeCat('all')">全部</button>
+                <% locals.sizeCategories.forEach(function(cat) { %>
+                    <button class="size-filter-btn" onclick="filterSizeCat('<%= cat %>')"><%= cat %></button>
+                <% }); %>
+            </div>
+            <div class="size-table-wrap">
+                <table class="size-table">
+                    <thead><tr><th>名称</th><th>宽度 (px)</th><th>高度 (px)</th><th>比例</th><th>分类</th></tr></thead>
+                    <tbody>
+                        <% locals.sizeLibrary.presets.forEach(function(p) { %>
+                            <tr data-category="<%= p.category %>">
+                                <td class="size-name"><%= p.label %></td>
+                                <td><%= p.width.toLocaleString() %></td>
+                                <td><%= p.height.toLocaleString() %></td>
+                                <td class="size-ratio"><%= p.width %>: <%= p.height %></td>
+                                <td><span class="size-cat-tag"><%= p.category %></span></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+    <script>
+        function filterSizeCat(cat) {
+            document.querySelectorAll('.size-filter-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+            document.querySelectorAll('.size-table tbody tr').forEach(tr => {
+                tr.style.display = (cat === 'all' || tr.dataset.category === cat) ? '' : 'none';
+            });
+        }
+    </script>
+    <% } %>
+
     <!-- ═══════════ Footer ═══════════ -->
-    <footer class="footer">
         <div class="container">
             <div class="footer-grid">
                 <div>
