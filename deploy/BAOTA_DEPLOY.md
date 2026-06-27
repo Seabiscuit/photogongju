@@ -336,12 +336,18 @@ sudo chmod -R 777 /opt/photogongju/python_ai/outputs
 
 ## 快速部署（一键脚本）
 
-项目提供了完整的一键部署脚本：
+项目提供了完整的一键部署脚本，**必须用 bash 执行，不能用 node**：
 
 ```bash
 cd /opt/photogongju
 sudo chmod +x deploy/install.sh
+
+# ✅ 正确方式
 sudo bash deploy/install.sh
+
+# ❌ 错误方式（会报 SyntaxError）
+# sudo node deploy/install.sh
+# ./deploy/install.sh          ← 如果没用 chmod +x 会失败
 ```
 
 脚本支持分步执行：

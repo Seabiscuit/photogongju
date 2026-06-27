@@ -1,0 +1,34 @@
+# Shell scripts must use LF line endings on all platforms
+*.sh text eol=lf
+*.bash text eol=lf
+
+# Python files use LF
+*.py text eol=lf
+*.pyi text eol=lf
+
+# Config files use LF
+*.conf text eol=lf
+*.cfg text eol=lf
+*.toml text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.xml text eol=lf
+
+# JavaScript uses LF
+*.js text eol=lf
+*.mjs text eol=lf
+*.cjs text eol=lf
+
+# Web files use LF
+*.css text eol=lf
+*.ejs text eol=lf
+*.html text eol=lf
+*.svg text eol=lf
+
+# Markdown & docs
+*.md text eol=lf
+*.txt text eol=lf
+
+# Package lock files
+package-lock.json text eol=lf
