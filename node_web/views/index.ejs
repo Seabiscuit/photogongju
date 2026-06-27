@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <%- include('partials/seo-meta', {
-        title: 'PhotoGongju - AI智能证件照制作工具 | 免费在线换底色、抠图、裁剪',
-        description: 'PhotoGongju是免费在线AI证件照制作工具，支持一寸二寸照片制作、证件照换底色(红/蓝/白)、AI智能抠图换背景、照片裁剪压缩。50+证件照尺寸规格，在线制作无需下载。',
-        keywords: '证件照制作,在线证件照,证件照换底色,一寸照片,二寸照片,AI抠图,证件照换背景,免费证件照,照片处理工具',
+        title: t('seo.homeTitle'),
+        description: t('seo.homeDesc'),
+        keywords: t('seo.homeKeywords'),
         canonical: '/'
     }) %>
     <link rel="stylesheet" href="/css/style.css">
@@ -80,23 +80,23 @@
     <!-- ═══════════ How It Works ═══════════ -->
     <section class="section">
         <div class="container">
-            <h2 class="section-title">How It Works</h2>
-            <p class="section-subtitle">Three simple steps to get your perfect ID photo</p>
+            <h2 class="section-title"><%= t('how.title') %></h2>
+            <p class="section-subtitle"><%= t('how.subtitle') %></p>
             <div class="steps-grid">
                 <div class="step-card">
                     <div class="step-number">1</div>
-                    <h3>Upload Photo</h3>
-                    <p>Upload any portrait photo. JPG, PNG, WEBP — we support them all. Drag & drop or click to select.</p>
+                    <h3><%= t('how.step1.title') %></h3>
+                    <p><%= t('how.step1.desc') %></p>
                 </div>
                 <div class="step-card">
                     <div class="step-number">2</div>
-                    <h3>AI Processing</h3>
-                    <p>Our AI automatically removes the background and replaces it with your chosen color. Red, blue, or white.</p>
+                    <h3><%= t('how.step2.title') %></h3>
+                    <p><%= t('how.step2.desc') %></p>
                 </div>
                 <div class="step-card">
                     <div class="step-number">3</div>
-                    <h3>Download Result</h3>
-                    <p>Get your perfect ID photo in standard sizes. Download instantly — no watermark, high quality.</p>
+                    <h3><%= t('how.step3.title') %></h3>
+                    <p><%= t('how.step3.desc') %></p>
                 </div>
             </div>
         </div>
@@ -105,48 +105,48 @@
     <!-- ═══════════ Features ═══════════ -->
     <section class="section section-gray">
         <div class="container">
-            <h2 class="section-title">Everything You Need</h2>
-            <p class="section-subtitle">Powerful AI tools for all your photo editing needs</p>
+            <h2 class="section-title"><%= t('features.title') %></h2>
+            <p class="section-subtitle"><%= t('features.subtitle') %></p>
             <div class="features-grid">
                 <a href="/upload" class="feature-card">
                     <span class="card-icon">🤖</span>
-                    <h3>AI Background Removal</h3>
-                    <p>Deep learning model precisely separates person from background in seconds</p>
+                    <h3><%= t('features.ai.title') %></h3>
+                    <p><%= t('features.ai.desc') %></p>
                 </a>
                 <a href="/upload" class="feature-card">
                     <span class="card-icon">🎨</span>
-                    <h3>Background Replace</h3>
-                    <p>Switch between red, blue, and white backgrounds with one click</p>
+                    <h3><%= t('features.bg.title') %></h3>
+                    <p><%= t('features.bg.desc') %></p>
                 </a>
                 <a href="/upload" class="feature-card">
                     <span class="card-icon">📐</span>
-                    <h3>Auto Crop & Resize</h3>
-                    <p>50+ preset sizes for ID photos, visas, passports, and social media</p>
+                    <h3><%= t('features.resize.title') %></h3>
+                    <p><%= t('features.resize.desc') %></p>
                 </a>
                 <a href="/upload" class="feature-card">
                     <span class="card-icon">✨</span>
-                    <h3>Photo Enhancement</h3>
-                    <p>Filters, brightness, contrast, and sharpening to make your photo look professional</p>
+                    <h3><%= t('features.enhance.title') %></h3>
+                    <p><%= t('features.enhance.desc') %></p>
                 </a>
                 <a href="/upload" class="feature-card">
                     <span class="card-icon">🏷️</span>
-                    <h3>Watermark Engine</h3>
-                    <p>Text, logo, and tile watermarks to protect your images</p>
+                    <h3><%= t('features.watermark.title') %></h3>
+                    <p><%= t('features.watermark.desc') %></p>
                 </a>
                 <a href="/size-library" class="feature-card">
                     <span class="card-icon">📋</span>
-                    <h3>Size Library</h3>
-                    <p>Complete reference for ID photo specifications across countries and use cases</p>
+                    <h3><%= t('features.library.title') %></h3>
+                    <p><%= t('features.library.desc') %></p>
                 </a>
                 <a href="/upload" class="feature-card">
                     <span class="card-icon">⚡</span>
-                    <h3>Batch Processing</h3>
-                    <p>Process multiple photos at once with pipeline mode — remove bg, resize, filter in one go</p>
+                    <h3><%= t('features.batch.title') %></h3>
+                    <p><%= t('features.batch.desc') %></p>
                 </a>
                 <a href="/membership" class="feature-card">
                     <span class="card-icon">👑</span>
-                    <h3>Premium Quality</h3>
-                    <p>HD output, priority processing, and advanced features for VIP members</p>
+                    <h3><%= t('features.premium.title') %></h3>
+                    <p><%= t('features.premium.desc') %></p>
                 </a>
             </div>
         </div>
@@ -155,38 +155,38 @@
     <!-- ═══════════ Use Cases ═══════════ -->
     <section class="section">
         <div class="container">
-            <h2 class="section-title">Perfect For Every Need</h2>
-            <p class="section-subtitle">From official documents to social media — we've got you covered</p>
+            <h2 class="section-title"><%= t('usecases.title') %></h2>
+            <p class="section-subtitle"><%= t('usecases.subtitle') %></p>
             <div class="usecases-grid">
                 <div class="usecase-card">
                     <div class="usecase-icon">🪪</div>
-                    <h4>ID Cards</h4>
-                    <p>National ID, driver's license, student card — standard sizes ready</p>
+                    <h4><%= t('usecases.id.title') %></h4>
+                    <p><%= t('usecases.id.desc') %></p>
                 </div>
                 <div class="usecase-card">
                     <div class="usecase-icon">🛂</div>
-                    <h4>Passport & Visa</h4>
-                    <p>US, Schengen, Japan, China — country-specific specifications supported</p>
+                    <h4><%= t('usecases.passport.title') %></h4>
+                    <p><%= t('usecases.passport.desc') %></p>
                 </div>
                 <div class="usecase-card">
                     <div class="usecase-icon">🎓</div>
-                    <h4>Graduation & Resume</h4>
-                    <p>Professional headshots for your CV, LinkedIn, and job applications</p>
+                    <h4><%= t('usecases.graduation.title') %></h4>
+                    <p><%= t('usecases.graduation.desc') %></p>
                 </div>
                 <div class="usecase-card">
                     <div class="usecase-icon">📱</div>
-                    <h4>Social Media</h4>
-                    <p>Instagram, WeChat, TikTok, LinkedIn — optimized sizes for every platform</p>
+                    <h4><%= t('usecases.social.title') %></h4>
+                    <p><%= t('usecases.social.desc') %></p>
                 </div>
                 <div class="usecase-card">
                     <div class="usecase-icon">🛒</div>
-                    <h4>E-Commerce</h4>
-                    <p>Product photos with clean white backgrounds for Taobao, Amazon, Shopify</p>
+                    <h4><%= t('usecases.ecommerce.title') %></h4>
+                    <p><%= t('usecases.ecommerce.desc') %></p>
                 </div>
                 <div class="usecase-card">
                     <div class="usecase-icon">🖨️</div>
-                    <h4>Print Ready</h4>
-                    <p>A4, 4x6, 5x7 prints at 300 DPI — ready for the photo studio</p>
+                    <h4><%= t('usecases.print.title') %></h4>
+                    <p><%= t('usecases.print.desc') %></p>
                 </div>
             </div>
         </div>
@@ -195,26 +195,26 @@
     <!-- ═══════════ Comparison ═══════════ -->
     <section class="section section-dark">
         <div class="container">
-            <h2 class="section-title">Why PhotoGongju</h2>
-            <p class="section-subtitle">See how we compare to traditional photo studios and other online tools</p>
+            <h2 class="section-title"><%= t('compare.title') %></h2>
+            <p class="section-subtitle"><%= t('compare.subtitle') %></p>
             <div style="overflow-x:auto">
                 <table class="compare-table">
                     <thead>
                         <tr>
-                            <th>Feature</th>
-                            <th>📸 PhotoGongju</th>
-                            <th>🏪 Photo Studio</th>
-                            <th>📱 Other Apps</th>
+                            <th><%= t('compare.feature') %></th>
+                            <th><%= t('compare.us') %></th>
+                            <th><%= t('compare.studio') %></th>
+                            <th><%= t('compare.others') %></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr><td>Price</td><td class="check">Free</td><td>¥20-50/time</td><td>¥3-10/time</td></tr>
-                        <tr><td>AI Background Removal</td><td class="check">✓ Deep Learning</td><td class="cross">✗ Manual</td><td class="check">✓ Basic</td></tr>
-                        <tr><td>Processing Time</td><td class="check">< 1 second</td><td>10-30 minutes</td><td>5-15 seconds</td></tr>
-                        <tr><td>Size Presets</td><td class="check">50+ Presets</td><td class="check">All Standards</td><td>10-20 Presets</td></tr>
-                        <tr><td>Batch Processing</td><td class="check">✓ Pipeline</td><td class="cross">✗</td><td class="cross">✗</td></tr>
-                        <tr><td>No Watermark</td><td class="check">✓ Free Users</td><td>N/A</td><td>VIP Only</td></tr>
-                        <tr><td>Privacy</td><td class="check">Auto-delete 7d</td><td>Store Indefinitely</td><td>Varies</td></tr>
+                        <tr><td><%= t('compare.price') %></td><td class="check"><%= t('compare.price.us') %></td><td><%= t('compare.price.studio') %></td><td><%= t('compare.price.others') %></td></tr>
+                        <tr><td><%= t('compare.ai') %></td><td class="check"><%= t('compare.ai.us') %></td><td class="cross"><%= t('compare.ai.studio') %></td><td class="check"><%= t('compare.ai.others') %></td></tr>
+                        <tr><td><%= t('compare.speed') %></td><td class="check"><%= t('compare.speed.us') %></td><td><%= t('compare.speed.studio') %></td><td><%= t('compare.speed.others') %></td></tr>
+                        <tr><td><%= t('compare.presets') %></td><td class="check"><%= t('compare.presets.us') %></td><td class="check"><%= t('compare.presets.studio') %></td><td><%= t('compare.presets.others') %></td></tr>
+                        <tr><td><%= t('compare.batch') %></td><td class="check"><%= t('compare.batch') %> ✓</td><td class="cross">✗</td><td class="cross">✗</td></tr>
+                        <tr><td><%= t('compare.watermark') %></td><td class="check"><%= t('compare.watermark.us') %></td><td>N/A</td><td><%= t('compare.watermark.others') %></td></tr>
+                        <tr><td><%= t('compare.privacy') %></td><td class="check"><%= t('compare.privacy.us') %></td><td><%= t('compare.privacy.studio') %></td><td><%= t('compare.privacy.others') %></td></tr>
                     </tbody>
                 </table>
             </div>
@@ -224,46 +224,32 @@
     <!-- ═══════════ FAQ ═══════════ -->
     <section class="section">
         <div class="container">
-            <h2 class="section-title">Frequently Asked Questions</h2>
-            <p class="section-subtitle">Everything you need to know about our AI ID photo tool</p>
+            <h2 class="section-title"><%= t('faq.title') %></h2>
+            <p class="section-subtitle"><%= t('faq.subtitle') %></p>
             <div class="faq-list">
                 <div class="faq-item open">
                     <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
-                        Is PhotoGongju really free?
+                        <%= t('faq.q1') %>
                     </div>
-                    <div class="faq-answer">
-                        Yes! Basic ID photo generation (1-inch, 2-inch with white/blue/red backgrounds) is completely free.
-                        AI background removal is also free. Premium features like HD output (>1920px) and batch processing
-                        are available with our affordable VIP plans.
-                    </div>
+                    <div class="faq-answer"><%= t('faq.a1') %></div>
                 </div>
                 <div class="faq-item">
                     <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
-                        How does the AI background removal work?
+                        <%= t('faq.q2') %>
                     </div>
-                    <div class="faq-answer">
-                        We use a U²-Net deep learning model (ONNX runtime) that has been trained on thousands of images
-                        to accurately separate people from backgrounds. The model runs locally on our servers — your photos
-                        are never sent to third-party APIs.
-                    </div>
+                    <div class="faq-answer"><%= t('faq.a2') %></div>
                 </div>
                 <div class="faq-item">
                     <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
-                        What photo formats and sizes do you support?
+                        <%= t('faq.q3') %>
                     </div>
-                    <div class="faq-answer">
-                        We support JPG, PNG, WEBP, BMP, and TIFF formats up to 50MB. Output is available in 295×413 (1-inch),
-                        413×579 (2-inch), and 50+ other preset sizes for passports, visas, and social media platforms.
-                    </div>
+                    <div class="faq-answer"><%= t('faq.a3') %></div>
                 </div>
                 <div class="faq-item">
                     <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
-                        Is my photo data safe and private?
+                        <%= t('faq.q4') %>
                     </div>
-                    <div class="faq-answer">
-                        Absolutely. Uploaded photos are automatically deleted after 7 days. We use secure shredding
-                        (data overwrite) for all deleted files. We never share or sell your photos to third parties.
-                    </div>
+                    <div class="faq-answer"><%= t('faq.a4') %></div>
                 </div>
             </div>
         </div>
@@ -272,11 +258,11 @@
     <!-- ═══════════ CTA ═══════════ -->
     <section class="section" style="text-align:center;background:linear-gradient(135deg,#f0fdfa,#e6fffa)">
         <div class="container">
-            <h2 class="section-title">Ready to Create Your Perfect ID Photo?</h2>
-            <p class="section-subtitle">Join thousands of users who create professional ID photos in seconds</p>
+            <h2 class="section-title"><%= t('cta.title') %></h2>
+            <p class="section-subtitle"><%= t('cta.subtitle') %></p>
             <div class="hero-actions">
-                <a href="/upload" class="btn btn-primary btn-lg btn-pill">🚀 Start Free Now</a>
-                <a href="/membership" class="btn btn-white btn-lg btn-pill">👑 View Plans</a>
+                <a href="/upload" class="btn btn-primary btn-lg btn-pill"><%= t('cta.btn1') %></a>
+                <a href="/membership" class="btn btn-white btn-lg btn-pill"><%= t('cta.btn2') %></a>
             </div>
         </div>
     </section>
@@ -287,33 +273,31 @@
             <div class="footer-grid">
                 <div>
                     <div class="footer-brand">📸 PhotoGongju</div>
-                    <p class="footer-desc">
-                        AI-powered ID photo generation tool. Remove backgrounds, change colors, and crop to perfect sizes — all in your browser.
-                    </p>
+                    <p class="footer-desc"><%= t('footer.brand.desc') %></p>
                 </div>
                 <div>
-                    <h4>Product</h4>
-                    <a href="/upload">Upload & Process</a>
-                    <a href="/size-library">Size Library</a>
-                    <a href="/membership">Pricing</a>
-                    <a href="/tutorial">Guides</a>
+                    <h4><%= t('footer.product') %></h4>
+                    <a href="/upload"><%= t('footer.upload') %></a>
+                    <a href="/size-library"><%= t('footer.sizes') %></a>
+                    <a href="/membership"><%= t('footer.pricing') %></a>
+                    <a href="/tutorial"><%= t('footer.guides') %></a>
                 </div>
                 <div>
-                    <h4>Resources</h4>
-                    <a href="/tutorial/how-to-take-id-photo">How to Take ID Photos</a>
-                    <a href="/tutorial/change-background">Change Background</a>
-                    <a href="/tutorial/visa-photo-guide">Visa Photo Guide</a>
-                    <a href="/tutorial/photo-resize">Photo Resize Tutorial</a>
+                    <h4><%= t('footer.resources') %></h4>
+                    <a href="/tutorial/how-to-take-id-photo"><%= t('footer.howto') %></a>
+                    <a href="/tutorial/change-background"><%= t('footer.bgchange') %></a>
+                    <a href="/tutorial/visa-photo-guide"><%= t('footer.visa') %></a>
+                    <a href="/tutorial/photo-resize"><%= t('footer.resize') %></a>
                 </div>
                 <div>
-                    <h4>Legal</h4>
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
-                    <a href="#">Cookie Policy</a>
+                    <h4><%= t('footer.legal') %></h4>
+                    <a href="#"><%= t('footer.privacy') %></a>
+                    <a href="#"><%= t('footer.terms') %></a>
+                    <a href="#"><%= t('footer.cookies') %></a>
                 </div>
             </div>
             <div class="footer-bottom">
-                <span>© 2024 PhotoGongju. All rights reserved.</span>
+                <span><%= t('footer.copyright') %></span>
                 <div class="footer-tech">
                     <span>FastAPI</span>
                     <span>Node.js</span>

@@ -18,6 +18,11 @@ const translations = {
         'nav.aiOffline': 'AI Offline',
 
         // Hero
+        // SEO
+        'seo.homeTitle': 'PhotoGongju - AI ID Photo Maker | Free Online Background Removal & Crop',
+        'seo.homeDesc': 'PhotoGongju is a free online AI ID photo maker. Create 1-inch & 2-inch ID photos, change background color (red/blue/white), AI background removal, photo crop & resize. 50+ preset sizes, no download required.',
+        'seo.homeKeywords': 'ID photo maker, online ID photo, change background color, 1 inch photo, 2 inch photo, AI background removal, passport photo, visa photo, free ID photo, photo editor',
+
         'hero.badge': 'AI-Powered Background Removal',
         'hero.title1': 'Remove Photo Background',
         'hero.title2': 'With AI Precision',
@@ -289,6 +294,11 @@ const translations = {
         'nav.aiOffline': 'AI 离线',
 
         // Hero
+        // SEO
+        'seo.homeTitle': 'PhotoGongju - AI智能证件照制作工具 | 免费在线换底色、抠图、裁剪',
+        'seo.homeDesc': 'PhotoGongju是免费在线AI证件照制作工具，支持一寸二寸照片制作、证件照换底色(红/蓝/白)、AI智能抠图换背景、照片裁剪压缩。50+证件照尺寸规格，在线制作无需下载。',
+        'seo.homeKeywords': '证件照制作,在线证件照,证件照换底色,一寸照片,二寸照片,AI抠图,证件照换背景,免费证件照,照片处理工具',
+
         'hero.badge': 'AI 智能背景去除',
         'hero.title1': 'AI 精准去除',
         'hero.title2': '照片背景',
