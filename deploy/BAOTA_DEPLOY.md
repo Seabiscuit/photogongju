@@ -316,13 +316,33 @@ sudo chmod -R 777 /opt/photogongju/python_ai/outputs
 
 ## 常见问题
 
-| 问题 | 排查方法 |
-|------|---------|
-| 502 Bad Gateway | `supervisorctl status` 检查后端服务是否运行 |
-| AI抠图失败 | 确认 `u2net.onnx` 在 `/opt/photogongju/python_ai/weights/` |
-| 上传大文件失败 | 检查 Nginx `client_max_body_size` 和宝塔上传限制 |
-| 中文乱码 | 确认 Nginx `charset utf-8;` |
-| 模型下载慢 | 手动下载后通过宝塔文件管理器上传到 weights/ |
+| 问题 | 原因 | 解决方法 |
+|------|------|---------|
+| `Cannot find module 'express'` | 未安装 Node 依赖 | 在 SSH 中执行下方安装命令 |
+| 502 Bad Gateway | 后端服务未运行 | `supervisorctl status` 检查服务状态 |
+| AI抠图失败 | 模型文件缺失 | 确认 `u2net.onnx` 在 `weights/` 目录 |
+| 上传大文件失败 | Nginx 限制太小 | 检查 `client_max_body_size 50m;` |
+| 中文乱码 | 字符集未配置 | 确认 Nginx `charset utf-8;` |
+
+### 解决 `Cannot find module 'express'`
+
+这是最常见的问题——上传代码时 `node_modules` 被排除了。在服务器 SSH 中执行：
+
+```bash
+# 安装 Node.js 依赖（国内服务器用镜像源）
+cd /opt/photogongju/node_web
+npm config set registry https://registry.npmmirror.com
+npm install
+
+# 安装 Python 依赖
+cd /opt/photogongju/python_ai
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+```
+
+> 注意：上传项目代码时不要上传 `node_modules` 和 `venv` 目录（太大且平台相关）。
+> 正确做法是上传代码后在服务器上本地执行 `npm install`。
 
 ---
 
