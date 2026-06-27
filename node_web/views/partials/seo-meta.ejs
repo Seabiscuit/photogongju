@@ -1,0 +1,75 @@
+<%# SEO 元信息公共模板 - 所有页面通过 include 引入 %>
+<%
+  // 默认值
+  const seo = {
+    title: typeof title !== 'undefined' ? title : 'PhotoGongju - 在线证件照制作工具',
+    description: typeof description !== 'undefined' ? description : 'PhotoGongju在线证件照制作工具，支持一寸二寸照片制作、证件照换底色、照片裁剪压缩，免费在线证件照处理，智能AI抠图换背景',
+    keywords: typeof keywords !== 'undefined' ? keywords : '证件照,在线证件照,证件照制作,一寸照片,二寸照片,照片换底色,证件照换背景,在线抠图,照片裁剪,智能证件照',
+    canonical: typeof canonical !== 'undefined' ? canonical : '',
+    ogImage: typeof ogImage !== 'undefined' ? ogImage : '/images/og-default.png',
+    noindex: typeof noindex !== 'undefined' ? noindex : false,
+    siteName: 'PhotoGongju',
+    locale: 'zh_CN',
+    twitterCard: 'summary_large_image',
+  };
+%>
+    <!-- ★ SEO 核心 Meta -->
+    <title><%= seo.title %></title>
+    <meta name="description" content="<%= seo.description %>">
+    <meta name="keywords" content="<%= seo.keywords %>">
+    <meta name="robots" content="<%= seo.noindex ? 'noindex,nofollow' : 'index,follow' %>">
+    <meta name="author" content="PhotoGongju">
+    <meta name="copyright" content="PhotoGongju">
+    <meta name="applicable-device" content="pc,mobile">
+    <meta http-equiv="Cache-Control" content="no-transform">
+    <meta http-equiv="Content-Language" content="zh-CN">
+
+    <!-- ★ Canonical URL（避免重复收录） -->
+    <% if (seo.canonical) { %>
+    <link rel="canonical" href="<%= seo.canonical %>">
+    <% } %>
+
+    <!-- ★ Open Graph (社交分享) -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="<%= seo.siteName %>">
+    <meta property="og:locale" content="<%= seo.locale %>">
+    <meta property="og:title" content="<%= seo.title %>">
+    <meta property="og:description" content="<%= seo.description %>">
+    <meta property="og:image" content="<%= seo.ogImage %>">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- ★ Twitter Card -->
+    <meta name="twitter:card" content="<%= seo.twitterCard %>">
+    <meta name="twitter:title" content="<%= seo.title %>">
+    <meta name="twitter:description" content="<%= seo.description %>">
+
+    <!-- ★ 百度站长验证标签（替换为实际token） -->
+    <meta name="baidu-site-verification" content="codeva-YourBaiduToken">
+    <!-- ★ 360站长验证 -->
+    <meta name="360-site-verification" content="Your360Token">
+    <!-- ★ 搜狗站长验证 -->
+    <meta name="sogou_site_verification" content="YourSogouToken">
+
+    <!-- ★ DNS预解析（加速第三方资源加载） -->
+    <link rel="dns-prefetch" href="//hm.baidu.com">
+    <link rel="dns-prefetch" href="//zz.bdstatic.com">
+    <link rel="dns-prefetch" href="//www.googletagmanager.com">
+
+    <!-- ★ 性能提示：告知浏览器此页面将预连接关键域名 -->
+    <link rel="preconnect" href="//hm.baidu.com" crossorigin>
+
+    <!-- ★ 结构化数据: WebApplication (帮助百度理解网站类型) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "PhotoGongju",
+      "url": "https://photogongju.com<%= typeof canonical !== 'undefined' ? canonical : '/' %>",
+      "description": "<%= seo.description %>",
+      "applicationCategory": "Multimedia",
+      "operatingSystem": "ALL",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY" },
+      "browserRequirements": "Requires JavaScript. Requires HTML5."
+    }
+    </script>

@@ -1,0 +1,35 @@
+{
+  "name": "photogongju-web",
+  "version": "1.0.0",
+  "description": "PhotoGongju 图片处理工具箱 - Node.js 主站",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "lint": "eslint ."
+  },
+  "keywords": ["image", "photo", "watermark", "resize", "filter"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.1",
+    "express-rate-limit": "^7.4.1",
+    "express-session": "^1.18.1",
+    "form-data": "^4.0.1",
+    "multer": "^1.4.5-lts.1",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "config": {
+    "npm_config_registry": "https://registry.npmmirror.com"
+  }
+}

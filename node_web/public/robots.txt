@@ -1,0 +1,107 @@
+# ╔══════════════════════════════════════════════════════════════╗
+# ║  PhotoGongju — robots.txt 爬虫规则                           ║
+# ║  面向: 百度蜘蛛 / Googlebot / 360 / 搜狗 / 必应               ║
+# ╚══════════════════════════════════════════════════════════════╝
+
+# ── Sitemap 地址 ──
+Sitemap: https://photogongju.com/sitemap.xml
+
+# ═══════════════════════════════════════════════════════════
+# 全局规则
+# ═══════════════════════════════════════════════════════════
+User-agent: *
+# 爬取延迟（百度建议设置，单位秒）
+Crawl-delay: 2
+
+# 允许所有主要页面
+Allow: /
+Allow: /upload
+Allow: /size-library
+Allow: /membership
+Allow: /tutorial/
+Allow: /docs/
+
+# ═══════════════════════════════════════════════════════════
+# 禁止爬取的路径（隐私/管理/API/临时文件）
+# ═══════════════════════════════════════════════════════════
+Disallow: /api/
+Disallow: /admin/
+Disallow: /uploads/
+Disallow: /outputs/
+Disallow: /temp/
+Disallow: /*/download/
+Disallow: /result/
+Disallow: /login
+Disallow: /register
+Disallow: /logout
+Disallow: /css/
+Disallow: /js/
+Disallow: /fonts/
+Disallow: /*.json$
+Disallow: /*.xml$
+Disallow: /*.log$
+Disallow: /node_modules/
+Disallow: /.env
+
+# ═══════════════════════════════════════════════════════════
+# 百度蜘蛛 — 专用规则
+# ═══════════════════════════════════════════════════════════
+User-agent: Baiduspider
+User-agent: Baiduspider-image
+User-agent: Baiduspider-video
+User-agent: Baiduspider-news
+User-agent: Baiduspider-favo
+User-agent: Baiduspider-cpro
+User-agent: Baiduspider-ads
+Crawl-delay: 1
+Allow: /
+Allow: /upload
+Allow: /tutorial/
+Allow: /size-library
+Disallow: /api/
+Disallow: /uploads/
+Disallow: /outputs/
+Disallow: /result/
+
+# ═══════════════════════════════════════════════════════════
+# Google 蜘蛛
+# ═══════════════════════════════════════════════════════════
+User-agent: Googlebot
+User-agent: Googlebot-Image
+User-agent: Googlebot-News
+Crawl-delay: 1
+Allow: /
+Allow: /upload
+Allow: /tutorial/
+Allow: /size-library
+Disallow: /api/
+Disallow: /uploads/
+Disallow: /outputs/
+Disallow: /result/
+
+# ═══════════════════════════════════════════════════════════
+# 360 蜘蛛
+# ═══════════════════════════════════════════════════════════
+User-agent: 360Spider
+Crawl-delay: 2
+Allow: /
+Allow: /tutorial/
+Allow: /size-library
+
+# ═══════════════════════════════════════════════════════════
+# 搜狗蜘蛛
+# ═══════════════════════════════════════════════════════════
+User-agent: Sogou web spider
+Crawl-delay: 2
+Allow: /
+Allow: /tutorial/
+Allow: /size-library
+
+# ═══════════════════════════════════════════════════════════
+# 必应蜘蛛
+# ═══════════════════════════════════════════════════════════
+User-agent: bingbot
+Crawl-delay: 1
+Allow: /
+Allow: /tutorial/
+Allow: /size-library

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="<%= locals.isZh ? 'zh-CN' : 'en' %>">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('partials/seo-meta', {
+        title: '在线证件照制作 - 免费换底色、裁剪、一键生成证件照 | PhotoGongju',
+        description: 'PhotoGongju在线证件照制作页面，上传照片即可一键生成标准证件照。支持一寸二寸照片、换底色(红/蓝/白)、AI智能抠图、照片裁剪压缩、添加水印、批量处理。',
+        keywords: '证件照制作,在线证件照,免费证件照,证件照换底色,红底证件照,蓝底证件照,白底证件照,照片裁剪,AI抠图,批量证件照,在线证件照工具',
+        canonical: '/upload'
+    }) %>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="preload" href="/css/style.css" as="style">
+</head>
+<body class="<%= locals.bodyClass || '' %>">
+
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="navbar-brand">
+                <span class="brand-icon">🖼️</span>
+                <span class="brand-text">PhotoGongju</span>
+            </a>
+            <div class="navbar-links">
+                <a href="/" class="nav-link <%= (locals.activeNav || '') === 'home' ? 'active' : '' %>">首页</a>
+                <a href="/upload" class="nav-link <%= (locals.activeNav || '') === 'upload' ? 'active' : '' %>">上传处理</a>
+                <a href="/size-library" class="nav-link <%= (locals.activeNav || '') === 'size-library' ? 'active' : '' %>">尺寸库</a>
+                <a href="/membership" class="nav-link <%= (locals.activeNav || '') === 'membership' ? 'active' : '' %>">会员</a>
+            </div>
+            <div class="navbar-status">
+                <% if (locals.isLoggedIn) { %>
+                    <span class="user-badge <%= locals.isVip ? 'is-vip' : '' %>">
+                        <%= locals.isVip ? '👑' : '👤' %> <%= locals.user.name %>
+                    </span>
+                    <a href="/logout" class="nav-link logout-link">退出</a>
+                <% } else { %>
+                    <a href="/login" class="nav-link login-link">登录</a>
+                <% } %>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 上传处理区 -->
+    <main class="upload-page">
+        <div class="container">
+            <h2 class="page-title">上传图片并选择处理方式</h2>
+
+            <!-- ★ 免费用户功能限制提示 -->
+            <% if (!locals.isVip && locals.getRestrictions) { %>
+                <% var restrictions = locals.getRestrictions(); %>
+                <% if (restrictions.length > 0) { %>
+                <div class="restriction-notice">
+                    <span class="notice-icon">🔒</span>
+                    <span>以下功能需开通会员：</span>
+                    <% restrictions.forEach(function(r) { %>
+                        <span class="restriction-tag-sm"><%= r.desc %></span>
+                    <% }); %>
+                    <a href="/membership" class="btn btn-primary btn-xs">开通会员</a>
+                </div>
+                <% } %>
+            <% } %>
+
+            <!-- 步骤指示器 -->
+            <div class="steps-indicator">
+                <div class="step active" data-step="1">
+                    <span class="step-number">1</span>
+                    <span class="step-label">上传图片</span>
+                </div>
+                <div class="step-connector"></div>
+                <div class="step" data-step="2">
+                    <span class="step-number">2</span>
+                    <span class="step-label">选择处理</span>
+                </div>
+                <div class="step-connector"></div>
+                <div class="step" data-step="3">
+                    <span class="step-number">3</span>
+                    <span class="step-label">查看结果</span>
+                </div>
+            </div>
+
+            <div class="upload-layout">
+                <!-- 左侧：上传区域 -->
+                <div class="upload-panel">
+                    <div class="upload-zone" id="uploadZone">
+                        <div class="upload-placeholder">
+                            <div class="upload-icon">📁</div>
+                            <p class="upload-text">拖拽图片到此处或点击上传</p>
+                            <p class="upload-hint">支持 JPG / PNG / WEBP / BMP，最大 50MB</p>
+                        </div>
+                        <input type="file" id="fileInput" accept="image/*" hidden>
+                        <img id="preview" class="preview-image" style="display:none" alt="预览">
+                    </div>
+
+                    <!-- 上传进度 -->
+                    <div class="upload-progress" id="uploadProgress" style="display:none">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <span class="progress-text" id="progressText">上传中...</span>
+                    </div>
+
+                    <button class="btn btn-primary btn-block" id="uploadBtn" disabled>
+                        ⬆️ 上传图片
+                    </button>
+                </div>
+
+                <!-- 右侧：处理选项面板 -->
+                <div class="process-panel" id="processPanel">
+
+                    <!-- ★ 证件照快捷生成区（上传后激活） -->
+                    <div class="quick-presets-section" id="quickPresets" style="display:none">
+                        <h3 class="quick-presets-title">📸 证件照快捷生成</h3>
+                        <p class="quick-presets-hint">选择尺寸和背景色，一键生成标准证件照</p>
+
+                        <!-- 尺寸快捷按钮 -->
+                        <div class="preset-size-group">
+                            <span class="preset-label">尺寸：</span>
+                            <button class="preset-btn preset-size" data-width="295" data-height="413" data-label="一寸">
+                                <span class="preset-size-name">一寸</span>
+                                <span class="preset-size-desc">25×35mm</span>
+                            </button>
+                            <button class="preset-btn preset-size" data-width="413" data-height="579" data-label="二寸">
+                                <span class="preset-size-name">二寸</span>
+                                <span class="preset-size-desc">35×49mm</span>
+                            </button>
+                            <button class="preset-btn preset-size" data-width="744" data-height="1051" data-label="三寸">
+                                <span class="preset-size-name">三寸</span>
+                                <span class="preset-size-desc">63×89mm</span>
+                            </button>
+                            <button class="preset-btn preset-size" data-width="898" data-height="1205" data-label="四寸">
+                                <span class="preset-size-name">四寸</span>
+                                <span class="preset-size-desc">76×102mm</span>
+                            </button>
+                            <button class="preset-btn preset-size" data-width="260" data-height="378" data-label="小一寸">
+                                <span class="preset-size-name">小一寸</span>
+                                <span class="preset-size-desc">22×32mm</span>
+                            </button>
+                            <button class="preset-btn preset-size" data-width="390" data-height="567" data-label="大一寸">
+                                <span class="preset-size-name">大一寸</span>
+                                <span class="preset-size-desc">33×48mm</span>
+                            </button>
+                        </div>
+
+                        <!-- 背景色快捷选择 -->
+                        <div class="preset-bg-group">
+                            <span class="preset-label">背景：</span>
+                            <button class="preset-btn preset-bg active" data-bg="#FFFFFF" data-bg-name="白色">
+                                <span class="bg-swatch" style="background:#FFFFFF"></span> 白色
+                            </button>
+                            <button class="preset-btn preset-bg" data-bg="#438EDB" data-bg-name="蓝色">
+                                <span class="bg-swatch" style="background:#438EDB"></span> 蓝色
+                            </button>
+                            <button class="preset-btn preset-bg" data-bg="#FF0000" data-bg-name="红色">
+                                <span class="bg-swatch" style="background:#FF0000"></span> 红色
+                            </button>
+                            <button class="preset-btn preset-bg" data-bg="#87CEEB" data-bg-name="浅蓝">
+                                <span class="bg-swatch" style="background:#87CEEB"></span> 浅蓝
+                            </button>
+                            <button class="preset-btn preset-bg" data-bg="#D3D3D3" data-bg-name="灰色">
+                                <span class="bg-swatch" style="background:#D3D3D3"></span> 灰色
+                            </button>
+                        </div>
+
+                        <!-- 一键生成按钮 -->
+                        <button class="btn btn-primary btn-block btn-lg" id="quickGenerateBtn" disabled>
+                            🚀 一键生成证件照
+                        </button>
+                        <p class="quick-presets-status" id="quickPresetsStatus"></p>
+                    </div>
+
+                    <!-- 上传前提示 -->
+                    <div class="process-placeholder" id="processPlaceholder">
+                        <div class="placeholder-icon">📸</div>
+                        <h3>上传照片开始制作</h3>
+                        <p>上传你的照片后，选择证件照尺寸和背景色，一键生成标准证件照</p>
+                        <p class="placeholder-hint">也支持缩放、滤镜、水印等高级处理</p>
+                    </div>
+
+                    <h3>处理选项</h3>
+
+                    <!-- 处理类型选择 -->
+                    <div class="process-tabs">
+                        <button class="process-tab active" data-tab="single">单项处理</button>
+                        <button class="process-tab" data-tab="pipeline">流水线批处理</button>
+                    </div>
+
+                    <!-- 单项处理 -->
+                    <div class="process-content" id="singleProcess">
+                        <!-- 缩放 -->
+                        <div class="process-group">
+                            <h4>📐 图片缩放</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>宽度 (px)</label>
+                                    <input type="number" id="resizeWidth" placeholder="自动" min="1" max="8192">
+                                </div>
+                                <div class="form-group">
+                                    <label>高度 (px)</label>
+                                    <input type="number" id="resizeHeight" placeholder="自动" min="1" max="8192">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>缩放模式</label>
+                                    <select id="resizeMode">
+                                        <option value="fit">等比适应 (Fit)</option>
+                                        <option value="fill">拉伸填满 (Fill)</option>
+                                        <option value="cover">等比覆盖 (Cover)</option>
+                                        <option value="thumbnail">缩略图 (Thumbnail)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>留白颜色</label>
+                                    <input type="color" id="resizeBg" value="#FFFFFF">
+                                </div>
+                            </div>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="resizeUpscale" checked> 允许放大
+                            </label>
+                            <button class="btn btn-secondary btn-sm" id="resizeBtn" disabled>应用缩放</button>
+                        </div>
+
+                        <!-- 滤镜 -->
+                        <div class="process-group">
+                            <h4>🎨 滤镜效果</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>滤镜类型</label>
+                                    <select id="filterType">
+                                        <option value="grayscale">灰度</option>
+                                        <option value="sepia">怀旧 (Sepia)</option>
+                                        <option value="blur">模糊</option>
+                                        <option value="sharpen">锐化</option>
+                                        <option value="brightness">亮度调整</option>
+                                        <option value="contrast">对比度调整</option>
+                                        <option value="saturation">饱和度调整</option>
+                                        <option value="warm">暖色调</option>
+                                        <option value="cool">冷色调</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>强度 (0~1)</label>
+                                    <input type="range" id="filterIntensity" min="0" max="1" step="0.05" value="0.5">
+                                    <span id="filterIntensityVal">0.5</span>
+                                </div>
+                            </div>
+                            <button class="btn btn-secondary btn-sm" id="filterBtn" disabled>应用滤镜</button>
+                        </div>
+
+                        <!-- 水印 -->
+                        <div class="process-group">
+                            <h4>🏷️ 水印</h4>
+                            <div class="form-group">
+                                <label>水印类型</label>
+                                <select id="watermarkType">
+                                    <option value="text">文字水印</option>
+                                    <option value="image">图片 Logo 水印</option>
+                                    <option value="tile">平铺水印</option>
+                                </select>
+                            </div>
+                            <div id="textWatermarkConfig">
+                                <div class="form-group">
+                                    <label>水印文字</label>
+                                    <input type="text" id="wmText" placeholder="© 2024 PhotoGongju" maxlength="200">
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>字体大小</label>
+                                        <input type="number" id="wmFontSize" value="36" min="8" max="500">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>字体颜色</label>
+                                        <input type="color" id="wmColor" value="#FFFFFF">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>透明度</label>
+                                    <input type="range" id="wmOpacity" min="0" max="1" step="0.05" value="0.5">
+                                    <span id="wmOpacityVal">0.5</span>
+                                </div>
+                            </div>
+                            <div id="imageWatermarkConfig" style="display:none">
+                                <div class="form-group">
+                                    <label>水印图片</label>
+                                    <input type="file" id="wmImageFile" accept="image/*">
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>缩放比例</label>
+                                        <input type="range" id="wmScale" min="0.01" max="1" step="0.01" value="0.2">
+                                        <span id="wmScaleVal">0.2</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>透明度</label>
+                                        <input type="range" id="wmImgOpacity" min="0" max="1" step="0.05" value="0.7">
+                                        <span id="wmImgOpacityVal">0.7</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>水印位置</label>
+                                    <select id="wmPosition">
+                                        <option value="top_left">左上</option>
+                                        <option value="top_center">中上</option>
+                                        <option value="top_right">右上</option>
+                                        <option value="center">居中</option>
+                                        <option value="bottom_left">左下</option>
+                                        <option value="bottom_center">中下</option>
+                                        <option value="bottom_right" selected>右下</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>旋转角度</label>
+                                    <input type="number" id="wmRotation" value="0" min="-360" max="360">
+                                </div>
+                            </div>
+                            <button class="btn btn-secondary btn-sm" id="watermarkBtn" disabled>添加水印</button>
+                        </div>
+
+                        <!-- AI 背景去除 -->
+                        <div class="process-group">
+                            <h4>🤖 AI 背景去除</h4>
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="alphaMatting"> 启用 Alpha 抠图优化（边缘更精细）
+                            </label>
+                            <button class="btn btn-secondary btn-sm" id="removeBgBtn" disabled>
+                                🤖 智能抠图
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 流水线处理 -->
+                    <div class="process-content" id="pipelineProcess" style="display:none">
+                        <p class="process-hint">
+                            选择需要执行的步骤，按顺序自动处理：抠图 → 缩放 → 滤镜 → 水印
+                        </p>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="pipeRemoveBg"> AI 背景去除
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="pipeResize" checked> 缩放处理
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="pipeFilter"> 滤镜处理
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="pipeWatermark"> 水印添加
+                        </label>
+                        <div class="form-group">
+                            <label>输出格式</label>
+                            <select id="outputFormat">
+                                <option value="png" selected>PNG</option>
+                                <option value="jpg">JPEG</option>
+                                <option value="webp">WebP</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary btn-block" id="pipelineBtn" disabled>
+                            ⚡ 一键处理
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 处理结果通知 -->
+            <div class="result-notification" id="resultNotification" style="display:none">
+                <div class="notification-content">
+                    <span class="notification-icon" id="notificationIcon">✅</span>
+                    <span class="notification-text" id="notificationText"></span>
+                    <a class="btn btn-primary btn-sm" id="viewResultBtn" style="display:none">
+                        查看结果 →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2024 PhotoGongju</p>
+        </div>
+    </footer>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

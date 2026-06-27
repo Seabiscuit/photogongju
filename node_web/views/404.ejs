@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="<%= locals.isZh ? 'zh-CN' : 'en' %>">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('partials/seo-meta', {
+        title: '404 页面未找到 - PhotoGongju在线证件照工具',
+        description: '您访问的页面不存在。PhotoGongju提供免费在线证件照制作，支持一寸二寸照片、换底色、抠图等功能。',
+        keywords: '404,页面未找到,证件照制作,在线证件照',
+        noindex: true
+    }) %>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .error-404-wrap {
+            min-height: calc(100vh - 64px - 80px);
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 40px 20px; text-align: center;
+        }
+        .error-404-card {
+            background: #fff; border-radius: 16px; padding: 60px 40px;
+            max-width: 600px; width: 100%; box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+        .error-code { font-size: 6rem; font-weight: 900; color: #6366f1; line-height: 1; margin-bottom: 8px; }
+        .error-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 12px; color: #1e293b; }
+        .error-desc { color: #64748b; font-size: 0.95rem; line-height: 1.8; margin-bottom: 32px; }
+        .error-links { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        .error-link-card {
+            display: block; padding: 12px 20px; border: 1px solid #e2e8f0;
+            border-radius: 10px; color: #334155; text-decoration: none;
+            font-size: 0.9rem; transition: all 0.2s;
+        }
+        .error-link-card:hover {
+            border-color: #6366f1; background: #eef2ff; text-decoration: none;
+            transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99,102,241,0.12);
+        }
+        .error-link-card .icon { font-size: 1.2rem; margin-right: 4px; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="container">
+        <a href="/" class="navbar-brand">
+            <span class="brand-icon">🖼️</span>
+            <span class="brand-text">PhotoGongju</span>
+        </a>
+    </div>
+</nav>
+
+<div class="error-404-wrap">
+    <div class="error-404-card">
+        <div class="error-code">404</div>
+        <h1 class="error-title">页面未找到</h1>
+        <p class="error-desc">
+            您访问的页面可能已被删除、更名或暂时不可用。<br>
+            请尝试以下热门工具页面：
+        </p>
+        <div class="error-links">
+            <a href="/" class="error-link-card"><span class="icon">🏠</span> 返回首页</a>
+            <a href="/upload" class="error-link-card"><span class="icon">📷</span> 证件照制作</a>
+            <a href="/tutorial" class="error-link-card"><span class="icon">📖</span> 教程中心</a>
+            <a href="/tutorial/how-to-take-id-photo" class="error-link-card"><span class="icon">🎓</span> 证件照拍摄教程</a>
+            <a href="/tutorial/change-background" class="error-link-card"><span class="icon">🎨</span> 换底色教程</a>
+            <a href="/tutorial/visa-photo-guide" class="error-link-card"><span class="icon">✈️</span> 签证照片指南</a>
+            <a href="/size-library" class="error-link-card"><span class="icon">📐</span> 尺寸规格大全</a>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="container"><p>&copy; 2024 PhotoGongju — 在线证件照制作工具</p></div>
+</footer>
+
+</body>
+</html>

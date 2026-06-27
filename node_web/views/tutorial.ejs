@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="<%= locals.isZh ? 'zh-CN' : 'en' %>">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('partials/seo-meta', {
+        title: '证件照制作教程中心 - 在线证件照拍摄、换底、裁剪、排版指南 | PhotoGongju',
+        description: 'PhotoGongju证件照教程中心，涵盖在家拍证件照、换底色、尺寸裁剪、签证照片规格、AI抠图、水印添加等全系列免费教程，助你轻松搞定各类证件照。',
+        keywords: '证件照教程,证件照制作教程,如何拍证件照,证件照换底色,证件照尺寸,签证照片教程,照片裁剪教程,AI抠图教程,证件照排版',
+        canonical: '/tutorial'
+    }) %>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .tutorial-hero {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+            color: #fff; text-align: center; padding: 50px 20px 40px;
+        }
+        .tutorial-hero h1 { font-size: 2rem; margin-bottom: 8px; }
+        .tutorial-hero p { opacity: 0.85; font-size: 1rem; max-width: 650px; margin: 0 auto; }
+        .tutorial-grid {
+            max-width: 1150px; margin: 40px auto; padding: 0 20px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+            gap: 20px;
+        }
+        .tutorial-card {
+            background: #fff; border: 1px solid #e2e8f0; border-radius: 12px;
+            padding: 24px; transition: all 0.25s; text-decoration: none; color: inherit;
+            display: flex; gap: 14px;
+        }
+        .tutorial-card:hover {
+            transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            border-color: #6366f1; text-decoration: none;
+        }
+        .tutorial-icon { font-size: 2rem; flex-shrink: 0; margin-top: 2px; }
+        .tutorial-info h3 { font-size: 1.05rem; margin-bottom: 4px; color: #1e293b; }
+        .tutorial-info p { font-size: 0.88rem; color: #64748b; line-height: 1.5; margin: 0; }
+        .tutorial-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+        .tutorial-tag {
+            background: #eef2ff; color: #4f46e5; padding: 2px 10px;
+            border-radius: 10px; font-size: 0.78rem;
+        }
+        .breadcrumb {
+            max-width: 1150px; margin: 20px auto 0; padding: 0 20px;
+            font-size: 0.88rem; color: #94a3b8;
+        }
+        .breadcrumb a { color: #6366f1; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .breadcrumb span { margin: 0 6px; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="container">
+        <a href="/" class="navbar-brand">
+            <span class="brand-icon">🖼️</span>
+            <span class="brand-text">PhotoGongju</span>
+        </a>
+        <div class="navbar-links">
+            <a href="/" class="nav-link">首页</a>
+            <a href="/upload" class="nav-link">证件照制作</a>
+            <a href="/tutorial" class="nav-link active">教程</a>
+            <a href="/size-library" class="nav-link">尺寸库</a>
+        </div>
+    </div>
+</nav>
+
+<section class="tutorial-hero">
+    <h1>证件照制作教程中心</h1>
+    <p>从零基础到专业，涵盖拍摄、换底、裁剪、排版、签证规格等全系列免费教程</p>
+</section>
+
+<!-- 面包屑导航（SEO友好） -->
+<div class="breadcrumb">
+    <a href="/">首页</a><span>›</span><strong>证件照教程中心</strong>
+</div>
+
+<div class="tutorial-grid">
+    <!-- ★ 每篇文章含内链指向对应工具页面 -->
+    <a href="/tutorial/how-to-take-id-photo" class="tutorial-card">
+        <div class="tutorial-icon">📷</div>
+        <div class="tutorial-info">
+            <h3>在家自己拍证件照 — 完整教程</h3>
+            <p>不用去照相馆！用手机在家就能拍出合格证件照，灯光、背景、姿势全攻略。</p>
+            <div class="tutorial-tags">
+                <span class="tutorial-tag">拍摄技巧</span>
+                <span class="tutorial-tag">手机拍摄</span>
+                <span class="tutorial-tag">一寸照</span>
+            </div>
+        </div>
+    </a>
+
+    <a href="/tutorial/change-background" class="tutorial-card">
+        <div class="tutorial-icon">🎨</div>
+        <div class="tutorial-info">
+            <h3>证件照换底色 — 红底蓝底白底一键切换</h3>
+            <p>学会用在线工具给证件照换背景色，支持红底、蓝底、白底任意切换，省时省力。</p>
+            <div class="tutorial-tags">
+                <span class="tutorial-tag">换底色</span>
+                <span class="tutorial-tag">红底蓝底白底</span>
+                <span class="tutorial-tag">抠图</span>
+            </div>
+        </div>
+    </a>
+
+    <a href="/tutorial/photo-resize" class="tutorial-card">
+        <div class="tutorial-icon">📐</div>
+        <div class="tutorial-info">
+            <h3>照片尺寸调整 — 一寸二寸大小精修</h3>
+            <p>详细讲解一寸、二寸、小一寸等常见证件照尺寸规格，以及如何精确裁剪调整。</p>
+            <div class="tutorial-tags">
+                <span class="tutorial-tag">尺寸调整</span>
+                <span class="tutorial-tag">一寸二寸</span>
+                <span class="tutorial-tag">比例</span>
+            </div>
+        </div>
+    </a>
+
+    <a href="/tutorial/visa-photo-guide" class="tutorial-card">
+        <div class="tutorial-icon">✈️</div>
+        <div class="tutorial-info">
+            <h3>各国签证照片规格指南</h3>
+            <p>汇总美国、日本、申根、英国等热门国家签证照片要求，尺寸、底色、着装规范一网打尽。</p>
+            <div class="tutorial-tags">
+                <span class="tutorial-tag">签证</span>
+                <span class="tutorial-tag">护照</span>
+                <span class="tutorial-tag">各国规格</span>
+            </div>
+        </div>
+    </a>
+
+    <a href="/tutorial/id-photo-print" class="tutorial-card">
+        <div class="tutorial-icon">🖨️</div>
+        <div class="tutorial-info">
+            <h3>证件照打印排版教程</h3>
+            <p>一张相纸如何排版多张证件照？教你用排版工具高效利用相纸，省钱又方便。</p>
+            <div class="tutorial-tags">
+                <span class="tutorial-tag">打印排版</span>
+                <span class="tutorial-tag">省钱</span>
+                <span class="tutorial-tag">相纸</span>
+            </div>
+        </div>
+    </a>
+
+    <a href="/tutorial/ai-background-removal" class="tutorial-card">
+        <div class="tutorial-icon">🤖</div>
+        <div class="tutorial-info">
+            <h3>AI智能抠图去背景教程</h3>
+            <p>零门槛掌握AI抠图工具，一键去除照片背景，轻松制作透明底证件照。</p>
+            <div class="tutorial-tags">
+                <span class="tutorial-tag">AI抠图</span>
+                <span class="tutorial-tag">去背景</span>
+                <span class="tutorial-tag">智能</span>
+            </div>
+        </div>
+    </a>
+
+    <a href="/tutorial/watermark-guide" class="tutorial-card">
+        <div class="tutorial-icon">🏷️</div>
+        <div class="tutorial-info">
+            <h3>给照片添加水印保护版权</h3>
+            <p>学会用在线水印工具为照片添加文字或Logo水印，保护原创作品不被盗用。</p>
+            <div class="tutorial-tags">
+                <span class="tutorial-tag">水印</span>
+                <span class="tutorial-tag">版权保护</span>
+                <span class="tutorial-tag">Logo</span>
+            </div>
+        </div>
+    </a>
+</div>
+
+<footer class="footer">
+    <div class="container"><p>&copy; 2024 PhotoGongju — 在线证件照制作工具</p></div>
+</footer>
+
+</body>
+</html>

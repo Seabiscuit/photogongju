@@ -1,0 +1,25 @@
+# ============================================
+# Python AI 微服务依赖 (Python 3.8+ 兼容)
+# 国内镜像源配置：使用清华源加速下载
+# 安装命令：
+#   pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+# ============================================
+
+# --- Web 框架 ---
+fastapi>=0.110.0
+uvicorn[standard]>=0.22.0
+python-multipart>=0.0.9            # 文件上传支持
+
+# --- 图片处理核心 ---
+Pillow>=10.0.0                     # PIL 图像处理库
+opencv-python-headless>=4.8.0      # OpenCV 计算机视觉（无 GUI 版本）
+
+# --- AI 推理（Python 3.8 兼容版本） ---
+onnxruntime>=1.16.0                # ONNX 模型推理引擎
+numpy>=1.22.0,<1.25                # Python 3.8 最高支持 1.24.x
+
+# --- 工具库 ---
+aiohttp>=3.9.0                     # 异步 HTTP 客户端
+aiofiles>=23.0.0                   # 异步文件操作
+python-dotenv>=1.0.0               # 环境变量管理
+scipy>=1.7.0

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="<%= locals.isZh ? 'zh-CN' : 'en' %>">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('partials/seo-meta', {
+        title: (locals.tutorialTitle || '教程') + ' | PhotoGongju在线证件照',
+        description: locals.tutorialDesc || 'PhotoGongju免费证件照教程，手把手教你制作专业证件照。',
+        keywords: locals.tutorialKeywords || '证件照,教程,在线证件照',
+        canonical: locals.canonical || ''
+    }) %>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .tutorial-detail-wrap {
+            max-width: 820px; margin: 30px auto 50px; padding: 0 20px;
+        }
+        .tutorial-detail-wrap h1 { font-size: 1.8rem; margin-bottom: 8px; color: #1e293b; }
+        .tutorial-detail-wrap .meta {
+            font-size: 0.85rem; color: #94a3b8; margin-bottom: 24px;
+            display: flex; gap: 16px; flex-wrap: wrap;
+        }
+        .tutorial-detail-wrap .content { font-size: 1rem; line-height: 1.9; color: #334155; }
+        .tutorial-detail-wrap .content h2 {
+            font-size: 1.3rem; margin: 28px 0 12px; color: #1e293b;
+            border-left: 4px solid #6366f1; padding-left: 12px;
+        }
+        .tutorial-detail-wrap .content h3 { font-size: 1.1rem; margin: 20px 0 8px; color: #334155; }
+        .tutorial-detail-wrap .content p { margin-bottom: 14px; }
+        .tutorial-detail-wrap .content ul, .tutorial-detail-wrap .content ol {
+            margin: 10px 0 16px 20px;
+        }
+        .tutorial-detail-wrap .content li { margin-bottom: 6px; }
+
+        /* ★ 工具页CTA卡片（关键内链） */
+        .cta-tool-box {
+            background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+            border: 2px solid #6366f1; border-radius: 12px;
+            padding: 20px 24px; margin: 24px 0;
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 16px; flex-wrap: wrap;
+        }
+        .cta-tool-box .cta-text strong { font-size: 1.05rem; color: #4338ca; }
+        .cta-tool-box .cta-text span { color: #64748b; font-size: 0.9rem; display: block; margin-top: 2px; }
+        .cta-tool-box .btn-cta {
+            background: #6366f1; color: #fff; padding: 12px 28px;
+            border-radius: 8px; font-weight: 700; font-size: 0.95rem;
+            text-decoration: none; white-space: nowrap; transition: all 0.2s;
+        }
+        .cta-tool-box .btn-cta:hover { background: #4f46e5; text-decoration: none; }
+
+        /* ★ 相关教程卡片（提升爬虫抓取深度） */
+        .related-tutorials {
+            margin-top: 40px; padding-top: 24px; border-top: 1px solid #e2e8f0;
+        }
+        .related-tutorials h3 { font-size: 1.2rem; margin-bottom: 16px; }
+        .related-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 10px;
+        }
+        .related-item {
+            display: block; padding: 12px 16px; border: 1px solid #e2e8f0;
+            border-radius: 8px; color: #334155; text-decoration: none;
+            font-size: 0.9rem; transition: all 0.2s;
+        }
+        .related-item:hover { border-color: #6366f1; background: #f8fafc; text-decoration: none; }
+
+        .breadcrumb {
+            font-size: 0.88rem; color: #94a3b8; margin-bottom: 16px;
+        }
+        .breadcrumb a { color: #6366f1; text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="container">
+        <a href="/" class="navbar-brand">
+            <span class="brand-icon">🖼️</span>
+            <span class="brand-text">PhotoGongju</span>
+        </a>
+        <div class="navbar-links">
+            <a href="/" class="nav-link">首页</a>
+            <a href="/upload" class="nav-link">证件照制作</a>
+            <a href="/tutorial" class="nav-link active">教程</a>
+            <a href="/size-library" class="nav-link">尺寸库</a>
+        </div>
+    </div>
+</nav>
+
+<div class="tutorial-detail-wrap">
+    <div class="breadcrumb">
+        <a href="/">首页</a> › <a href="/tutorial">教程中心</a> › <strong><%= locals.tutorialTitle || '教程详情' %></strong>
+    </div>
+
+    <article>
+        <h1><%= locals.tutorialTitle || '教程详情' %></h1>
+        <div class="meta">
+            <span>📅 更新于 <%= locals.updateDate || '2024-06-25' %></span>
+            <span>📖 阅读约 <%= locals.readTime || '5' %> 分钟</span>
+            <span>👁️ 已阅读 <%= locals.viewCount || '1,280' %> 次</span>
+        </div>
+
+        <!-- ★ CTA 内链: 引导到证件照制作工具页 -->
+        <div class="cta-tool-box">
+            <div class="cta-text">
+                <strong>🖼️ 在线证件照制作工具</strong>
+                <span>无需下载，上传照片即可一键制作标准证件照</span>
+            </div>
+            <a href="/upload" class="btn-cta">立即制作证件照 →</a>
+        </div>
+
+        <div class="content">
+            <%- locals.tutorialContent || '<p>教程内容加载中...</p>' %>
+        </div>
+
+        <!-- ★ 底部CTA: 引导到尺寸库 -->
+        <div class="cta-tool-box" style="margin-top:32px;">
+            <div class="cta-text">
+                <strong>📐 证件照尺寸规格大全</strong>
+                <span>50+常用尺寸预设，一寸、二寸、护照、签证照片尺寸全覆盖</span>
+            </div>
+            <a href="/size-library" class="btn-cta">查看全部尺寸 →</a>
+        </div>
+    </article>
+
+    <!-- ★ 相关教程（内链矩阵，提升爬虫抓取深度） -->
+    <div class="related-tutorials">
+        <h3>📖 相关教程推荐</h3>
+        <div class="related-grid">
+            <% (locals.relatedTutorials || []).forEach(function(item) { %>
+                <a href="<%= item.url %>" class="related-item"><%= item.title %></a>
+            <% }); %>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="container"><p>&copy; 2024 PhotoGongju — 在线证件照制作工具</p></div>
+</footer>
+
+</body>
+</html>

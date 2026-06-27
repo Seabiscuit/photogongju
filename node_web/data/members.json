@@ -1,0 +1,18 @@
+{
+  "admin": {
+    "userId": "admin",
+    "tier": "yearly",
+    "planId": "yearly",
+    "paidAt": 1782487153909,
+    "expiredAt": 1876993031848,
+    "payOrderId": "DEMO_1782487153909"
+  },
+  "vip": {
+    "userId": "vip",
+    "tier": "yearly",
+    "planId": "yearly",
+    "paidAt": 1782517575037,
+    "expiredAt": 1814053575037,
+    "payOrderId": "PHONE_1782517575037"
+  }
+}

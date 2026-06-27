@@ -1,0 +1,51 @@
+# Dependencies
+node_web/node_modules/
+python_ai/venv/
+python_ai/__pycache__/
+python_ai/**/__pycache__/
+python_ai/**/*.pyc
+
+# AI Model (176MB — exceeds GitHub 100MB limit)
+python_ai/weights/u2net.onnx
+
+# Uploads & Outputs (temp files)
+python_ai/uploads/*
+python_ai/outputs/*
+node_web/public/uploads/*
+
+# Keep directory structure
+!python_ai/uploads/.gitkeep
+!python_ai/outputs/.gitkeep
+!node_web/public/uploads/.gitkeep
+!python_ai/weights/.gitkeep
+
+# IDE & Config
+.vscode/
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Logs
+*.log
+/tmp/
+
+# Scraped reference files (not part of project)
+ezremove_css.css
+ezremove_page.html
+
+# Test artifacts
+image/
+test_photo.png
+test_upload.jpg
+
+# Dev scripts (platform-specific)
+start-dev.bat
+start-dev1.bat
+
+# Test artifacts
+python_ai/pipeline_test.jpg
+python_ai/user_orig.jpg

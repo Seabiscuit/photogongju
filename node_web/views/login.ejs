@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="<%= locals.isZh ? 'zh-CN' : 'en' %>">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('partials/seo-meta', {
+        title: '登录 - PhotoGongju在线证件照制作工具',
+        description: '使用手机号快速登录PhotoGongju，管理您的证件照处理记录、会员权益和订单信息。',
+        keywords: '登录,手机号登录,验证码登录,PhotoGongju',
+        noindex: true
+    }) %>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .login-page-wrap {
+            min-height: calc(100vh - 64px - 80px);
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 40px 20px;
+        }
+        .login-card {
+            background: #fff; border-radius: 16px; padding: 40px 36px;
+            width: 100%; max-width: 420px; box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+        .login-card h2 { text-align: center; font-size: 1.5rem; margin-bottom: 4px; color: #1e293b; }
+        .login-card .sub { text-align: center; font-size: 0.88rem; color: #64748b; margin-bottom: 28px; }
+        .login-tabs { display: flex; margin-bottom: 24px; border-bottom: 2px solid #e2e8f0; }
+        .login-tab {
+            flex: 1; padding: 10px 0; text-align: center; cursor: pointer;
+            font-size: 0.95rem; font-weight: 500; color: #64748b;
+            border-bottom: 2px solid transparent; margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+        .login-tab.active { color: #6366f1; border-bottom-color: #6366f1; }
+        .login-tab:hover { color: #4f46e5; }
+
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #334155; }
+        .input-with-btn { display: flex; gap: 8px; }
+        .input-with-btn input { flex: 1; }
+        .login-card input[type="text"],
+        .login-card input[type="password"],
+        .login-card input[type="tel"] {
+            width: 100%; padding: 12px 14px; border: 1px solid #e2e8f0; border-radius: 8px;
+            font-size: 0.95rem; transition: border-color 0.2s; font-family: inherit;
+        }
+        .login-card input:focus { outline: none; border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
+        .login-card input::placeholder { color: #94a3b8; }
+
+        .btn-send-code {
+            white-space: nowrap; padding: 12px 18px; border: 1px solid #6366f1; border-radius: 8px;
+            background: #fff; color: #6366f1; font-size: 0.85rem; font-weight: 600;
+            cursor: pointer; transition: all 0.2s; min-width: 110px;
+        }
+        .btn-send-code:hover { background: #eef2ff; }
+        .btn-send-code:disabled { color: #94a3b8; border-color: #cbd5e1; background: #f8fafc; cursor: not-allowed; }
+        .btn-send-code.counting { color: #f59e0b; border-color: #f59e0b; }
+
+        .login-error {
+            background: #fef2f2; color: #dc2626; border: 1px solid #fecaca;
+            padding: 10px 14px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 16px;
+        }
+        .login-success {
+            background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0;
+            padding: 10px 14px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 16px;
+        }
+        .btn-login { width: 100%; padding: 14px; font-size: 1rem; margin-top: 6px; font-weight: 600; }
+        .btn-login:disabled { opacity: 0.6; }
+
+        .login-footer { text-align: center; margin-top: 20px; font-size: 0.88rem; color: #64748b; }
+        .login-footer a { color: #6366f1; font-weight: 600; }
+
+        .demo-tip {
+            margin-top: 20px; padding: 14px 16px; background: #fffbeb; border: 1px solid #fde68a;
+            border-radius: 10px; font-size: 0.8rem; color: #92400e; line-height: 1.6;
+        }
+        .demo-tip strong { color: #d97706; }
+        .demo-tip code {
+            background: #fef3c7; padding: 2px 6px; border-radius: 4px;
+            font-size: 0.8rem; font-weight: 700; color: #b45309;
+        }
+        .form-panel { display: none; }
+        .form-panel.active { display: block; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="navbar-brand">
+                <span class="brand-icon">🖼️</span>
+                <span class="brand-text">PhotoGongju</span>
+            </a>
+            <div class="navbar-links">
+                <a href="/" class="nav-link">首页</a>
+                <a href="/upload" class="nav-link">上传处理</a>
+                <a href="/membership" class="nav-link">会员</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="login-page-wrap">
+        <div class="login-card">
+            <h2 id="cardTitle">欢迎回来</h2>
+            <p class="sub" id="cardSub">使用手机号快速登录</p>
+
+            <% if (locals.error) { %>
+                <div class="login-error"><%= error %></div>
+            <% } %>
+
+            <!-- Tab 切换 -->
+            <div class="login-tabs">
+                <div class="login-tab active" data-tab="phone" onclick="switchTab('phone')">📱 手机号登录</div>
+                <div class="login-tab" data-tab="password" onclick="switchTab('password')">🔑 密码登录</div>
+            </div>
+
+            <!-- ★ 手机号 + 验证码登录 -->
+            <div class="form-panel active" id="phonePanel">
+                <form method="POST" action="/login" onsubmit="return validatePhoneForm()">
+                    <input type="hidden" name="redirect" value="<%= locals.redirect || '/' %>">
+                    <div class="form-group">
+                        <label>手机号码</label>
+                        <input type="tel" name="phone" id="phoneInput"
+                               placeholder="请输入手机号码" maxlength="11" autocomplete="tel"
+                               pattern="1[3-9]\d{9}" required autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label>验证码</label>
+                        <div class="input-with-btn">
+                            <input type="text" name="code" id="codeInput"
+                                   placeholder="请输入6位验证码" maxlength="6"
+                                   inputmode="numeric" autocomplete="one-time-code" required>
+                            <button type="button" class="btn-send-code" id="sendCodeBtn"
+                                    onclick="sendSmsCode()">获取验证码</button>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-login" id="phoneLoginBtn">
+                        登 录
+                    </button>
+                </form>
+            </div>
+
+            <!-- 用户名 + 密码登录（兼容） -->
+            <div class="form-panel" id="passwordPanel">
+                <form method="POST" action="/login">
+                    <input type="hidden" name="redirect" value="<%= locals.redirect || '/' %>">
+                    <div class="form-group">
+                        <label>用户名</label>
+                        <input type="text" name="username" placeholder="请输入用户名" required>
+                    </div>
+                    <div class="form-group">
+                        <label>密码</label>
+                        <input type="password" name="password" placeholder="请输入密码" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-login">登 录</button>
+                </form>
+                <div class="login-footer">
+                    还没有账号？<a href="#" onclick="switchTab('phone')">使用手机号注册/登录</a>
+                </div>
+            </div>
+
+            <!-- 开发模式提示 -->
+            <div class="demo-tip">
+                <strong>🧪 开发模式提示</strong><br>
+                验证码已设置为固定值: <code>123456</code><br>
+                也可用测试手机号直接登录（自动注册）<br>
+                演示账号: <code>admin</code> / <code>admin123</code>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container"><p>© 2024 PhotoGongju</p></div>
+    </footer>
+
+    <script>
+        const SMS_EXPIRE = <%= locals.smsExpire || 300 %>;
+        const SMS_RESEND = <%= locals.smsResend || 60 %>;
+        let countdownTimer = null;
+        let countdownLeft = 0;
+
+        function switchTab(tab) {
+            document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+            document.getElementById('phonePanel').classList.toggle('active', tab === 'phone');
+            document.getElementById('passwordPanel').classList.toggle('active', tab === 'password');
+            document.getElementById('cardSub').textContent = tab === 'phone'
+                ? '使用手机号快速登录'
+                : '使用账号密码登录';
+            if (tab === 'phone') document.getElementById('phoneInput').focus();
+        }
+
+        function validatePhoneForm() {
+            const phone = document.getElementById('phoneInput').value.trim();
+            const code = document.getElementById('codeInput').value.trim();
+            if (!/^1[3-9]\d{9}$/.test(phone)) {
+                alert('请输入有效的手机号码');
+                return false;
+            }
+            if (code.length !== 6) {
+                alert('请输入6位验证码');
+                return false;
+            }
+            return true;
+        }
+
+        async function sendSmsCode() {
+            const phone = document.getElementById('phoneInput').value.trim();
+            if (!/^1[3-9]\d{9}$/.test(phone)) {
+                alert('请输入有效的手机号码');
+                document.getElementById('phoneInput').focus();
+                return;
+            }
+
+            const btn = document.getElementById('sendCodeBtn');
+            if (btn.disabled) return;
+
+            btn.disabled = true;
+            btn.textContent = '发送中...';
+
+            try {
+                const res = await fetch('/api/send-sms', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone }),
+                });
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    // 开始倒计时
+                    countdownLeft = SMS_RESEND;
+                    btn.classList.add('counting');
+                    updateCountdown(btn);
+                    countdownTimer = setInterval(() => updateCountdown(btn), 1000);
+                    // 聚焦验证码输入框
+                    document.getElementById('codeInput').focus();
+                    // 显示成功提示
+                    showFlash('验证码已发送（开发模式: 123456）', 'success');
+                } else {
+                    btn.disabled = false;
+                    btn.textContent = '获取验证码';
+                    alert(data.error || '发送失败，请重试');
+                }
+            } catch (err) {
+                btn.disabled = false;
+                btn.textContent = '获取验证码';
+                alert('网络错误，请检查连接');
+            }
+        }
+
+        function updateCountdown(btn) {
+            if (countdownLeft <= 0) {
+                clearInterval(countdownTimer);
+                btn.classList.remove('counting');
+                btn.disabled = false;
+                btn.textContent = '重新获取';
+                return;
+            }
+            btn.textContent = `${countdownLeft}s 后重发`;
+            countdownLeft--;
+        }
+
+        function showFlash(msg, type) {
+            const existing = document.querySelector('.login-error, .login-success');
+            if (existing) existing.remove();
+            const div = document.createElement('div');
+            div.className = type === 'success' ? 'login-success' : 'login-error';
+            div.textContent = msg;
+            const card = document.querySelector('.login-card');
+            const sub = document.querySelector('.sub');
+            sub.after(div);
+            setTimeout(() => div.remove(), 5000);
+        }
+    </script>
+</body>
+</html>

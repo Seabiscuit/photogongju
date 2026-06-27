@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="<%= locals.isZh ? 'zh-CN' : 'en' %>">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('partials/seo-meta', {
+        title: '证件照处理结果 - PhotoGongju在线证件照工具',
+        description: '查看您的证件照处理结果，支持下载、对比原图与处理后效果。',
+        keywords: '证件照结果,证件照下载,照片处理结果',
+        noindex: true
+    }) %>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="<%= locals.bodyClass || '' %>">
+
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="navbar-brand">
+                <span class="brand-icon">🖼️</span>
+                <span class="brand-text">PhotoGongju</span>
+            </a>
+            <div class="navbar-links">
+                <a href="/" class="nav-link <%= (locals.activeNav || '') === 'home' ? 'active' : '' %>">首页</a>
+                <a href="/upload" class="nav-link <%= (locals.activeNav || '') === 'upload' ? 'active' : '' %>">上传处理</a>
+                <a href="/size-library" class="nav-link <%= (locals.activeNav || '') === 'size-library' ? 'active' : '' %>">尺寸库</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 结果展示区 -->
+    <main class="result-page">
+        <div class="container">
+            <% if (locals.error) { %>
+                <!-- 错误状态 -->
+                <div class="result-error">
+                    <div class="error-icon">⚠️</div>
+                    <h2>处理失败</h2>
+                    <p><%= error %></p>
+                    <a href="/upload" class="btn btn-primary">重新上传 →</a>
+                </div>
+            <% } else if (locals.result && locals.result.success) { %>
+                <!-- 成功状态 -->
+                <h2 class="page-title">✅ 处理完成</h2>
+                <p class="page-subtitle">任务 ID: <code><%= taskId %></code></p>
+
+                <!-- 图片对比 -->
+                <div class="compare-container">
+                    <div class="compare-panel">
+                        <h3>原始图片</h3>
+                        <% if (locals.originalUrl && locals.result.original) { %>
+                            <div class="image-card">
+                                <div class="image-wrapper">
+                                    <img src="<%= originalUrl %>" alt="原始图片" class="result-image">
+                                </div>
+                                <ul class="image-meta">
+                                    <li><strong>尺寸:</strong> <%= result.original.width %> × <%= result.original.height %> px</li>
+                                    <li><strong>格式:</strong> <%= result.original.format %></li>
+                                    <li><strong>大小:</strong> <%= (result.original.file_size / 1024).toFixed(1) %> KB</li>
+                                    <li><strong>比例:</strong> <%= result.original.aspect_ratio %></li>
+                                </ul>
+                            </div>
+                        <% } else { %>
+                            <div class="image-card image-card-placeholder">
+                                <div class="image-wrapper">
+                                    <div class="no-image-hint">📷<br>原始图片已过期<br>或不可追溯</div>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+
+                    <div class="compare-arrow">→</div>
+
+                    <div class="compare-panel">
+                        <h3>处理结果</h3>
+                        <% if (locals.result.processed) { %>
+                            <div class="image-card">
+                                <div class="image-wrapper">
+                                    <img src="<%= downloadUrl %>" alt="处理结果" class="result-image">
+                                </div>
+                                <ul class="image-meta">
+                                    <li><strong>尺寸:</strong> <%= result.processed.width %> × <%= result.processed.height %> px</li>
+                                    <li><strong>格式:</strong> <%= result.processed.format %></li>
+                                    <li><strong>大小:</strong> <%= (result.processed.file_size / 1024).toFixed(1) %> KB</li>
+                                    <li><strong>耗时:</strong> <%= result.elapsed_seconds %> 秒</li>
+                                </ul>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+
+                <!-- 操作按钮 -->
+                <div class="result-actions">
+                    <a href="<%= downloadUrl %>" class="btn btn-primary btn-lg" download>
+                        💾 下载结果
+                    </a>
+                    <a href="/upload" class="btn btn-outline btn-lg">
+                        🔄 处理新图片
+                    </a>
+                </div>
+
+            <% } else { %>
+                <!-- 空状态 -->
+                <div class="result-empty">
+                    <div class="empty-icon">📭</div>
+                    <h2>暂无结果</h2>
+                    <p>处理结果不可用或已过期</p>
+                    <a href="/upload" class="btn btn-primary">去上传图片 →</a>
+                </div>
+            <% } %>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2024 PhotoGongju</p>
+        </div>
+    </footer>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

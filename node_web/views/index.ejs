@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="<%= locals.isZh ? 'zh-CN' : 'en' %>">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('partials/seo-meta', {
+        title: 'PhotoGongju - AI智能证件照制作工具 | 免费在线换底色、抠图、裁剪',
+        description: 'PhotoGongju是免费在线AI证件照制作工具，支持一寸二寸照片制作、证件照换底色(红/蓝/白)、AI智能抠图换背景、照片裁剪压缩。50+证件照尺寸规格，在线制作无需下载。',
+        keywords: '证件照制作,在线证件照,证件照换底色,一寸照片,二寸照片,AI抠图,证件照换背景,免费证件照,照片处理工具',
+        canonical: '/'
+    }) %>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="preload" href="/css/style.css" as="style">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//hm.baidu.com">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='28' font-size='28'>📸</text></svg>">
+</head>
+<body class="<%= locals.bodyClass || '' %>">
+
+    <!-- ═══════════ Navigation ═══════════ -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="/" class="navbar-brand">
+                <span class="brand-icon">📸</span>
+                <span class="brand-text">PhotoGongju</span>
+            </a>
+            <div class="navbar-links">
+                <a href="/" class="nav-link active"><%= t('nav.home') %></a>
+                <a href="/upload" class="nav-link"><%= t('nav.upload') %></a>
+                <a href="/size-library" class="nav-link"><%= t('nav.sizes') %></a>
+                <a href="/tutorial" class="nav-link"><%= t('nav.guide') %></a>
+                <a href="/membership" class="nav-link"><%= t('nav.pricing') %></a>
+            </div>
+            <div class="navbar-actions">
+                <!-- Language Toggle -->
+                <div class="lang-switch">
+                    <button class="lang-btn <%= locals.isEn ? 'active' : '' %>" onclick="switchLang('en')">EN</button>
+                    <span class="lang-divider">|</span>
+                    <button class="lang-btn <%= locals.isZh ? 'active' : '' %>" onclick="switchLang('zh')">中文</button>
+                </div>
+                <% if (locals.isLoggedIn) { %>
+                    <span class="navbar-status">
+                        <span class="status-dot online"></span>
+                        <%= locals.user.name %>
+                    </span>
+                    <a href="/logout" class="btn btn-sm btn-outline"><%= locals.t('nav.logout') %></a>
+                <% } else { %>
+                    <a href="/login" class="btn btn-sm btn-outline"><%= locals.t('nav.login') %></a>
+                    <a href="/upload" class="btn btn-sm btn-primary"><%= locals.t('nav.getStarted') %></a>
+                <% } %>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ═══════════ Hero ═══════════ -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-badge">
+                <span class="badge-dot"></span> <%= t('hero.badge') %>
+            </div>
+            <h1 class="hero-title"><%= t('hero.title1') %><br><%= t('hero.title2') %></h1>
+            <p class="hero-subtitle"><%= t('hero.subtitle') %></p>
+            <div class="hero-actions">
+                <a href="/upload" class="btn btn-primary btn-lg btn-pill"><%= t('hero.cta1') %></a>
+                <a href="/tutorial" class="btn btn-white btn-lg btn-pill"><%= t('hero.cta2') %></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ How It Works ═══════════ -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">How It Works</h2>
+            <p class="section-subtitle">Three simple steps to get your perfect ID photo</p>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Upload Photo</h3>
+                    <p>Upload any portrait photo. JPG, PNG, WEBP — we support them all. Drag & drop or click to select.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>AI Processing</h3>
+                    <p>Our AI automatically removes the background and replaces it with your chosen color. Red, blue, or white.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Download Result</h3>
+                    <p>Get your perfect ID photo in standard sizes. Download instantly — no watermark, high quality.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ Features ═══════════ -->
+    <section class="section section-gray">
+        <div class="container">
+            <h2 class="section-title">Everything You Need</h2>
+            <p class="section-subtitle">Powerful AI tools for all your photo editing needs</p>
+            <div class="features-grid">
+                <a href="/upload" class="feature-card">
+                    <span class="card-icon">🤖</span>
+                    <h3>AI Background Removal</h3>
+                    <p>Deep learning model precisely separates person from background in seconds</p>
+                </a>
+                <a href="/upload" class="feature-card">
+                    <span class="card-icon">🎨</span>
+                    <h3>Background Replace</h3>
+                    <p>Switch between red, blue, and white backgrounds with one click</p>
+                </a>
+                <a href="/upload" class="feature-card">
+                    <span class="card-icon">📐</span>
+                    <h3>Auto Crop & Resize</h3>
+                    <p>50+ preset sizes for ID photos, visas, passports, and social media</p>
+                </a>
+                <a href="/upload" class="feature-card">
+                    <span class="card-icon">✨</span>
+                    <h3>Photo Enhancement</h3>
+                    <p>Filters, brightness, contrast, and sharpening to make your photo look professional</p>
+                </a>
+                <a href="/upload" class="feature-card">
+                    <span class="card-icon">🏷️</span>
+                    <h3>Watermark Engine</h3>
+                    <p>Text, logo, and tile watermarks to protect your images</p>
+                </a>
+                <a href="/size-library" class="feature-card">
+                    <span class="card-icon">📋</span>
+                    <h3>Size Library</h3>
+                    <p>Complete reference for ID photo specifications across countries and use cases</p>
+                </a>
+                <a href="/upload" class="feature-card">
+                    <span class="card-icon">⚡</span>
+                    <h3>Batch Processing</h3>
+                    <p>Process multiple photos at once with pipeline mode — remove bg, resize, filter in one go</p>
+                </a>
+                <a href="/membership" class="feature-card">
+                    <span class="card-icon">👑</span>
+                    <h3>Premium Quality</h3>
+                    <p>HD output, priority processing, and advanced features for VIP members</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ Use Cases ═══════════ -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Perfect For Every Need</h2>
+            <p class="section-subtitle">From official documents to social media — we've got you covered</p>
+            <div class="usecases-grid">
+                <div class="usecase-card">
+                    <div class="usecase-icon">🪪</div>
+                    <h4>ID Cards</h4>
+                    <p>National ID, driver's license, student card — standard sizes ready</p>
+                </div>
+                <div class="usecase-card">
+                    <div class="usecase-icon">🛂</div>
+                    <h4>Passport & Visa</h4>
+                    <p>US, Schengen, Japan, China — country-specific specifications supported</p>
+                </div>
+                <div class="usecase-card">
+                    <div class="usecase-icon">🎓</div>
+                    <h4>Graduation & Resume</h4>
+                    <p>Professional headshots for your CV, LinkedIn, and job applications</p>
+                </div>
+                <div class="usecase-card">
+                    <div class="usecase-icon">📱</div>
+                    <h4>Social Media</h4>
+                    <p>Instagram, WeChat, TikTok, LinkedIn — optimized sizes for every platform</p>
+                </div>
+                <div class="usecase-card">
+                    <div class="usecase-icon">🛒</div>
+                    <h4>E-Commerce</h4>
+                    <p>Product photos with clean white backgrounds for Taobao, Amazon, Shopify</p>
+                </div>
+                <div class="usecase-card">
+                    <div class="usecase-icon">🖨️</div>
+                    <h4>Print Ready</h4>
+                    <p>A4, 4x6, 5x7 prints at 300 DPI — ready for the photo studio</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ Comparison ═══════════ -->
+    <section class="section section-dark">
+        <div class="container">
+            <h2 class="section-title">Why PhotoGongju</h2>
+            <p class="section-subtitle">See how we compare to traditional photo studios and other online tools</p>
+            <div style="overflow-x:auto">
+                <table class="compare-table">
+                    <thead>
+                        <tr>
+                            <th>Feature</th>
+                            <th>📸 PhotoGongju</th>
+                            <th>🏪 Photo Studio</th>
+                            <th>📱 Other Apps</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Price</td><td class="check">Free</td><td>¥20-50/time</td><td>¥3-10/time</td></tr>
+                        <tr><td>AI Background Removal</td><td class="check">✓ Deep Learning</td><td class="cross">✗ Manual</td><td class="check">✓ Basic</td></tr>
+                        <tr><td>Processing Time</td><td class="check">< 1 second</td><td>10-30 minutes</td><td>5-15 seconds</td></tr>
+                        <tr><td>Size Presets</td><td class="check">50+ Presets</td><td class="check">All Standards</td><td>10-20 Presets</td></tr>
+                        <tr><td>Batch Processing</td><td class="check">✓ Pipeline</td><td class="cross">✗</td><td class="cross">✗</td></tr>
+                        <tr><td>No Watermark</td><td class="check">✓ Free Users</td><td>N/A</td><td>VIP Only</td></tr>
+                        <tr><td>Privacy</td><td class="check">Auto-delete 7d</td><td>Store Indefinitely</td><td>Varies</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ FAQ ═══════════ -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <p class="section-subtitle">Everything you need to know about our AI ID photo tool</p>
+            <div class="faq-list">
+                <div class="faq-item open">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                        Is PhotoGongju really free?
+                    </div>
+                    <div class="faq-answer">
+                        Yes! Basic ID photo generation (1-inch, 2-inch with white/blue/red backgrounds) is completely free.
+                        AI background removal is also free. Premium features like HD output (>1920px) and batch processing
+                        are available with our affordable VIP plans.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                        How does the AI background removal work?
+                    </div>
+                    <div class="faq-answer">
+                        We use a U²-Net deep learning model (ONNX runtime) that has been trained on thousands of images
+                        to accurately separate people from backgrounds. The model runs locally on our servers — your photos
+                        are never sent to third-party APIs.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                        What photo formats and sizes do you support?
+                    </div>
+                    <div class="faq-answer">
+                        We support JPG, PNG, WEBP, BMP, and TIFF formats up to 50MB. Output is available in 295×413 (1-inch),
+                        413×579 (2-inch), and 50+ other preset sizes for passports, visas, and social media platforms.
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+                        Is my photo data safe and private?
+                    </div>
+                    <div class="faq-answer">
+                        Absolutely. Uploaded photos are automatically deleted after 7 days. We use secure shredding
+                        (data overwrite) for all deleted files. We never share or sell your photos to third parties.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ CTA ═══════════ -->
+    <section class="section" style="text-align:center;background:linear-gradient(135deg,#f0fdfa,#e6fffa)">
+        <div class="container">
+            <h2 class="section-title">Ready to Create Your Perfect ID Photo?</h2>
+            <p class="section-subtitle">Join thousands of users who create professional ID photos in seconds</p>
+            <div class="hero-actions">
+                <a href="/upload" class="btn btn-primary btn-lg btn-pill">🚀 Start Free Now</a>
+                <a href="/membership" class="btn btn-white btn-lg btn-pill">👑 View Plans</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════ Footer ═══════════ -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-brand">📸 PhotoGongju</div>
+                    <p class="footer-desc">
+                        AI-powered ID photo generation tool. Remove backgrounds, change colors, and crop to perfect sizes — all in your browser.
+                    </p>
+                </div>
+                <div>
+                    <h4>Product</h4>
+                    <a href="/upload">Upload & Process</a>
+                    <a href="/size-library">Size Library</a>
+                    <a href="/membership">Pricing</a>
+                    <a href="/tutorial">Guides</a>
+                </div>
+                <div>
+                    <h4>Resources</h4>
+                    <a href="/tutorial/how-to-take-id-photo">How to Take ID Photos</a>
+                    <a href="/tutorial/change-background">Change Background</a>
+                    <a href="/tutorial/visa-photo-guide">Visa Photo Guide</a>
+                    <a href="/tutorial/photo-resize">Photo Resize Tutorial</a>
+                </div>
+                <div>
+                    <h4>Legal</h4>
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Cookie Policy</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>© 2024 PhotoGongju. All rights reserved.</span>
+                <div class="footer-tech">
+                    <span>FastAPI</span>
+                    <span>Node.js</span>
+                    <span>ONNX Runtime</span>
+                    <span>AI Powered</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>
