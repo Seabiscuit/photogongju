@@ -68,6 +68,11 @@
         .login-footer a { color: var(--color-primary); font-weight: 600; cursor: pointer; text-decoration: none; }
         .login-footer a:hover { text-decoration: underline; }
 
+        .captcha-img {
+            height: 42px; border-radius: 6px; border: 1px solid #e2e8f0; cursor: pointer;
+            min-width: 100px; background: #f8fafc;
+        }
+        .captcha-img:hover { border-color: var(--color-primary); }
         .demo-tip {
             margin-top: 20px; padding: 14px 16px; background: #fffbeb; border: 1px solid #fde68a;
             border-radius: 10px; font-size: 0.8rem; color: #92400e; line-height: 1.6;
@@ -124,6 +129,15 @@
                         <input type="password" name="password" placeholder="<%= t('login.passwordPlaceholder') %>"
                                autocomplete="current-password" required>
                     </div>
+                    <div class="form-group">
+                        <label><%= t('login.captcha') %></label>
+                        <div class="input-with-btn">
+                            <input type="text" name="captcha" placeholder="<%= t('login.captchaPlaceholder') %>"
+                                   maxlength="4" autocomplete="off" required style="flex:1">
+                            <img src="/api/captcha" alt="Captcha" class="captcha-img"
+                                 onclick="refreshCaptcha(this)" title="<%= t('login.captchaRefresh') %>">
+                        </div>
+                    </div>
                     <button type="submit" class="btn-login"><%= t('login.submit') %></button>
                 </form>
                 <div class="login-footer">
@@ -174,6 +188,9 @@
     </footer>
 
     <script>
+        function refreshCaptcha(img) {
+            img.src = '/api/captcha?' + Date.now();
+        }
         function switchTab(tab) {
             document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
             document.querySelector(`[data-tab="${tab}"]`).classList.add('active');

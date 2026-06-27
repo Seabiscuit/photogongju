@@ -22,6 +22,7 @@ const router = express.Router();
 const crypto = require('crypto');
 const membership = require('../models/membership');
 const userModel = require('../models/user');
+const captcha = require('../services/captcha');
 
 // 初始化演示账号
 userModel.initDemoUsers();
@@ -66,6 +67,21 @@ router.get('/membership', (req, res) => {
 });
 
 /**
+ * 图形验证码
+ * GET /api/captcha  — 返回 SVG 验证码图片
+ */
+router.get('/api/captcha', (req, res) => {
+    const { key, svg } = captcha.generate();
+
+    // 将 key 写入 session 供登录验证使用
+    req.session.captchaKey = key;
+
+    res.setHeader('Content-Type', 'image/svg+xml');
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.send(svg);
+});
+
+/**
  * 登录页面
  */
 router.get('/login', (req, res) => {
@@ -93,6 +109,13 @@ router.post('/login', express.urlencoded({ extended: true }), (req, res) => {
     // 校验
     if (!email || !password) {
         return res.redirect('/login?error=' + encodeURIComponent('请输入邮箱和密码'));
+    }
+
+    // 验证图形验证码
+    const captchaInput = req.body.captcha || '';
+    const captchaKey = req.session.captchaKey;
+    if (!captcha.verify(captchaKey, captchaInput)) {
+        return res.redirect('/login?error=' + encodeURIComponent('验证码错误，请重试'));
     }
 
     const user = userModel.authenticateUser(email, password);
