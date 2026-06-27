@@ -171,9 +171,8 @@ router.get('/size-library', async (req, res) => {
         fromFallback = true;
     }
 
-    res.render('index', {
+    res.render('size-library', {
         title: '尺寸库 - PhotoGongju',
-        subtitle: '50+ 常用图片尺寸预设，覆盖社交媒体、电商、打印等场景',
         sizeLibrary: sizeData,
         sizeCategories: [...new Set(sizeData.presets.map(p => p.category))],
         activeNav: 'size-library',
