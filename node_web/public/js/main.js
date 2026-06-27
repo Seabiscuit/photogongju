@@ -8,18 +8,6 @@
     'use strict';
 
     // ═══════════════════════════════════════════════════
-    // ★ 语言切换
-    // ═══════════════════════════════════════════════════
-
-    window.switchLang = function (lang) {
-        // 设置 Cookie（有效期 365 天），刷新页面生效
-        const d = new Date();
-        d.setFullYear(d.getFullYear() + 1);
-        document.cookie = 'lang=' + lang + ';path=/;expires=' + d.toUTCString() + ';SameSite=Lax';
-        location.reload();
-    };
-
-    // ═══════════════════════════════════════════════════
     // ★ 会员状态管理
     // ═══════════════════════════════════════════════════
 
