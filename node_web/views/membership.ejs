@@ -201,30 +201,32 @@
             <div class="pay-price" id="payPrice">¥9.9</div>
 
             <div class="pay-methods">
-                <div class="pay-method active" data-method="alipay" onclick="selectPayMethod('alipay')">
-                    💙 支付宝
+                <div class="pay-method active" data-method="WECHAT" onclick="selectPayMethod('WECHAT')">
+                    💚 微信支付
                 </div>
-                <div class="pay-method" data-method="wxpay" onclick="selectPayMethod('wxpay')">
-                    💚 微信
+                <div class="pay-method" data-method="ALIPAY" onclick="selectPayMethod('ALIPAY')">
+                    💙 支付宝
                 </div>
             </div>
 
             <div class="pay-qrcode" id="payQrcode">
-                <span id="qrcodeText">扫码支付</span>
+                <img id="qrImage" src="" alt="支付二维码" style="display:none;width:200px;height:200px;border-radius:8px;">
+                <span id="qrcodeText">选择支付方式后点击生成二维码</span>
             </div>
-            <p style="font-size:0.85rem;color:#64748b;">支付后自动开通，无需手动操作</p>
+            <p style="font-size:0.85rem;color:#64748b;">扫码支付后自动开通，无需手动操作</p>
+            <p id="payStatus" style="font-size:0.82rem;color:#f59e0b;display:none;">⏳ 等待支付...</p>
 
             <button class="btn btn-primary btn-pay-now" id="btnPayNow" onclick="createOrder()">
-                💳 生成支付订单
+                💳 生成支付二维码
             </button>
             <a href="#" class="btn btn-outline" style="display:block;margin-top:8px;text-decoration:none;"
-               id="btnMockPay" onclick="mockPay(event)" style="display:none">
-                🧪 开发模式: 模拟支付
+               id="btnMockPay" onclick="mockPay(event)">
+                🧪 开发模式: 模拟支付成功
             </a>
 
             <p class="pay-hint">
-                支持支付宝 / 微信扫码支付<br>
-                支付成功后自动激活会员
+                对接 <strong>易宝支付</strong> — 微信/支付宝扫码<br>
+                <span style="font-size:0.75rem;">开发环境使用模拟支付测试</span>
             </p>
 
             <button class="btn btn-secondary" style="margin-top:12px;" onclick="closePayModal()">取消</button>
@@ -239,7 +241,7 @@
     <script>
         // ══ 支付弹窗状态 ══
         let currentPayPlan = null;
-        let currentPayMethod = 'alipay';
+        let currentPayMethod = 'WECHAT';
         let currentOrderId = null;
         let pollTimer = null;
 
@@ -248,9 +250,14 @@
             document.getElementById('payPlanName').textContent = planName;
             document.getElementById('payPrice').textContent = '¥' + price;
             document.getElementById('payModal').classList.add('show');
+            document.getElementById('btnPayNow').textContent = '💳 生成支付二维码';
+            document.getElementById('btnPayNow').disabled = false;
+            document.getElementById('qrcodeText').style.display = 'block';
+            document.getElementById('qrcodeText').textContent = '选择支付方式后点击生成二维码';
+            document.getElementById('qrImage').style.display = 'none';
+            document.getElementById('payStatus').style.display = 'none';
             document.getElementById('btnMockPay').style.display = 'block';
-            document.getElementById('btnPayNow').textContent = '💳 生成支付订单';
-            document.getElementById('qrcodeText').textContent = '点击按钮生成支付';
+            if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
         }
 
         function closePayModal() {
@@ -264,7 +271,7 @@
             document.querySelector('[data-method="' + method + '"]').classList.add('active');
         }
 
-        // ══ 创建订单 ══
+        // ══ 创建订单 + 生成二维码 ══
         async function createOrder() {
             if (!currentPayPlan) return;
 
@@ -276,18 +283,28 @@
                 const res = await fetch('/api/payment/create-order', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ planId: currentPayPlan.planId }),
+                    body: JSON.stringify({ planId: currentPayPlan.planId, channel: currentPayMethod }),
                 });
                 const data = await res.json();
 
                 if (data.success) {
                     currentOrderId = data.orderId;
-                    document.getElementById('qrcodeText').textContent =
-                        '订单: ' + data.orderId + '\n金额: ¥' + currentPayPlan.price + '\n(模拟扫码支付)';
-                    document.getElementById('btnPayNow').textContent = '✅ 订单已生成';
-                    document.getElementById('btnMockPay').style.display = 'block';
+                    btn.textContent = '✅ 订单已生成';
 
-                    // 开始轮询支付状态
+                    // 显示二维码（生产用易宝URL，开发用文本）
+                    var img = document.getElementById('qrImage');
+                    if (data.qrUrl) {
+                        img.src = data.qrUrl;
+                        img.style.display = 'block';
+                        document.getElementById('qrcodeText').style.display = 'none';
+                    } else {
+                        img.style.display = 'none';
+                        document.getElementById('qrcodeText').style.display = 'block';
+                        document.getElementById('qrcodeText').innerHTML =
+                            '📱 ' + currentPayMethod + ' 扫码支付<br><small>订单: ' + data.orderId.substr(0, 16) + '...<br>金额: ¥' + currentPayPlan.price + '</small>';
+                    }
+
+                    document.getElementById('payStatus').style.display = 'block';
                     startPolling(currentOrderId);
                 } else {
                     alert('创建订单失败: ' + (data.error || '未知错误'));
@@ -308,13 +325,11 @@
                 alert('请先生成支付订单');
                 return;
             }
-
-            const res = await fetch('/api/payment/callback?'
-                + 'out_trade_no=' + currentOrderId
-                + '&money=' + currentPayPlan.price
-                + '&trade_status=TRADE_SUCCESS'
-                + '&sign=dev_mock'
-            );
+            var res = await fetch('/api/payment/callback?'
+                + 'orderId=' + currentOrderId
+                + '&amount=' + currentPayPlan.price
+                + '&orderStatus=SUCCESS'
+                + '&sign=dev_mock');
 
             if (res.ok) {
                 alert('支付成功！会员已激活 🎉');
@@ -327,14 +342,16 @@
         // ══ 轮询支付状态 ══
         function startPolling(orderId) {
             if (pollTimer) clearInterval(pollTimer);
+            var statusEl = document.getElementById('payStatus');
             pollTimer = setInterval(async () => {
                 try {
                     const res = await fetch('/api/payment/check/' + orderId);
                     const data = await res.json();
                     if (data.status === 'paid') {
                         clearInterval(pollTimer);
-                        alert('支付成功！会员已激活 🎉');
-                        window.location.reload();
+                        statusEl.textContent = '✅ 支付成功！会员已激活 🎉';
+                        statusEl.style.color = '#16a34a';
+                        setTimeout(() => window.location.reload(), 1500);
                     }
                 } catch (e) { /* 忽略轮询错误 */ }
             }, 3000);

@@ -82,7 +82,10 @@ app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // 请求体解析
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({
+    limit: '10mb',
+    verify: (req, res, buf) => { req.rawBody = buf.toString(); },  // 保留原始 body 供验签
+}));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Cookie 与 Session

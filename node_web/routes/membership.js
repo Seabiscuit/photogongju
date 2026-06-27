@@ -23,21 +23,10 @@ const crypto = require('crypto');
 const membership = require('../models/membership');
 const userModel = require('../models/user');
 const captcha = require('../services/captcha');
+const yeepay = require('../services/yeepay');
 
 // 初始化演示账号
 userModel.initDemoUsers();
-
-// ============================================
-// 支付配置（对接个人免签 / 易支付）
-// ============================================
-
-const PAY_CONFIG = {
-    pid: process.env.PAY_PID || '1001',
-    key: process.env.PAY_KEY || 'YourPayKeyHere',
-    gateway: process.env.PAY_GATEWAY || 'https://pay.example.com/submit.php',
-    notifyUrl: process.env.PAY_NOTIFY_URL || 'http://localhost:3000/api/payment/callback',
-    returnUrl: process.env.PAY_RETURN_URL || 'http://localhost:3000/membership',
-};
 
 const orderStore = new Map();
 
@@ -62,7 +51,8 @@ router.get('/membership', (req, res) => {
         isVip: membership.isVip(req.userId),
         expireDesc: membership.getExpireDesc(req.userId),
         restrictions,
-        payConfig: { gateway: PAY_CONFIG.gateway },
+        payConfig: { gateway: yeepay.YEEPAY_CONFIG.gateway },
+        yeepayConfigured: yeepay.isConfigured(),
     });
 });
 
@@ -197,49 +187,54 @@ router.get('/logout', (req, res) => {
 // ── 支付 API ──
 // ============================================
 
-router.post('/api/payment/create-order', express.json(), (req, res) => {
+router.post('/api/payment/create-order', express.json(), async (req, res) => {
     try {
-        const { planId } = req.body;
+        const { planId, channel } = req.body;
         const plan = membership.getPlanById(planId);
         if (!plan) return res.status(400).json({ error: '无效的套餐' });
 
         const orderId = membership.generateOrderId();
         const userId = req.userId || 'guest';
 
+        // 存储订单信息
         orderStore.set(orderId, {
             orderId, userId, planId, price: plan.price,
-            status: 'pending',
+            status: 'pending', channel: channel || 'WECHAT',
             createdAt: Date.now(),
             expiresAt: Date.now() + 30 * 60 * 1000,
         });
 
-        const payParams = {
-            pid: PAY_CONFIG.pid,
-            type: 'alipay',
-            out_trade_no: orderId,
-            notify_url: PAY_CONFIG.notifyUrl,
-            return_url: PAY_CONFIG.returnUrl,
-            name: `PhotoGongju ${plan.name}`,
-            money: plan.price.toFixed(2),
-            sitename: 'PhotoGongju',
-        };
+        // 开发模式：使用模拟支付
+        const mockPayUrl = `/api/payment/callback?orderId=${orderId}&amount=${plan.price.toFixed(2)}&orderStatus=SUCCESS&sign=dev_mock`;
 
-        const signStr = Object.keys(payParams)
-            .sort()
-            .map(k => `${k}=${payParams[k]}`)
-            .join('&') + PAY_CONFIG.key;
-        payParams.sign = crypto.createHash('md5').update(signStr).digest('hex');
-        payParams.sign_type = 'MD5';
+        // 生产模式：调用易宝支付创建二维码
+        if (yeepay.isConfigured()) {
+            try {
+                const result = await yeepay.createPayment({
+                    orderId,
+                    amount: plan.price,
+                    subject: `PhotoGongju ${plan.name}`,
+                    payWay: channel || 'WECHAT',
+                });
+                return res.json({
+                    success: true, orderId, plan: plan.name, price: plan.price,
+                    codeUrl: result.codeUrl || result.prePayTn,
+                    qrUrl: result.codeUrl || result.prePayTn,
+                    channel: channel || 'WECHAT',
+                    mockPayUrl,
+                });
+            } catch (yeepayErr) {
+                console.error('[YeePay] Create order failed, fallback to mock:', yeepayErr.message);
+            }
+        }
 
-        const queryStr = Object.entries(payParams)
-            .map(([k, v]) => `${k}=${encodeURIComponent(v)}`)
-            .join('&');
-        const payUrl = `${PAY_CONFIG.gateway}?${queryStr}`;
-        const mockPayUrl = `/api/payment/callback?out_trade_no=${orderId}&money=${plan.price.toFixed(2)}&trade_status=TRADE_SUCCESS&sign=dev_mock`;
-
+        // 开发模式 / 易宝未配置：返回模拟支付
         res.json({
             success: true, orderId, plan: plan.name, price: plan.price,
-            payUrl, mockPayUrl, qrCode: payUrl,
+            codeUrl: mockPayUrl,
+            qrUrl: null,
+            channel: channel || 'WECHAT',
+            mockPayUrl,
         });
     } catch (err) {
         console.error('[ERROR] 创建订单失败:', err.message);
@@ -248,60 +243,83 @@ router.post('/api/payment/create-order', express.json(), (req, res) => {
 });
 
 router.all('/api/payment/callback', (req, res) => {
-    const params = req.method === 'POST' ? req.body : req.query;
-    console.log('[INFO] 支付回调收到:', JSON.stringify(params));
+    console.log('[INFO] 支付回调收到:', req.method, JSON.stringify(req.query || req.body));
 
     try {
-        const { out_trade_no, money, trade_status, sign, sign_type } = params;
-
-        if (process.env.NODE_ENV !== 'development' || sign !== 'dev_mock') {
-            const verifyParams = { ...params };
-            delete verifyParams.sign;
-            delete verifyParams.sign_type;
-            const signStr = Object.keys(verifyParams)
-                .sort()
-                .filter(k => verifyParams[k] !== '' && verifyParams[k] !== undefined)
-                .map(k => `${k}=${verifyParams[k]}`)
-                .join('&') + PAY_CONFIG.key;
-            const expectedSign = crypto.createHash('md5').update(signStr).digest('hex');
-            if (sign !== expectedSign) {
-                console.error('[ERROR] 支付回调签名验证失败');
-                return res.status(400).send('sign error');
-            }
+        // 开发模式：模拟支付
+        if (req.query.sign === 'dev_mock' || (req.body && req.body.sign === 'dev_mock')) {
+            const p = req.method === 'POST' ? req.body : req.query;
+            const { orderId, amount, orderStatus } = p;
+            return processPaymentCallback(orderId, parseFloat(amount), orderStatus, res);
         }
 
-        const order = orderStore.get(out_trade_no);
-        if (!order) return res.status(404).send('order not found');
-        if (order.price !== parseFloat(money)) return res.status(400).send('money mismatch');
-        if (trade_status !== 'TRADE_SUCCESS') return res.send('waiting');
-        if (order.status === 'paid') return res.send('success');
+        // 生产模式：易宝支付回调
+        const rawBody = req.rawBody || JSON.stringify(req.body);
+        const signature = req.headers['x-yop-sign'];
 
-        const memberInfo = membership.activateMembership(order.userId, order.planId, out_trade_no);
-        order.status = 'paid';
-        order.paidAt = Date.now();
-        order.tier = memberInfo.tier;
-        order.expiredAt = memberInfo.expiredAt;
-        orderStore.set(out_trade_no, order);
-
-        // 同步更新用户模型的 tier
-        const sessionUser = req.session?.user;
-        if (sessionUser?.email) {
-            try { userModel.updateUserTier(sessionUser.email, memberInfo.tier); } catch (e) {}
+        // 验签
+        if (!yeepay.verifyCallback(rawBody, signature)) {
+            console.error('[YeePay] Callback signature verification failed');
+            return res.status(400).send('sign error');
         }
 
-        console.log(`[SUCCESS] 会员激活成功: userId=${order.userId}, tier=${memberInfo.tier}`);
-        res.send('success');
+        // 解析回调参数
+        const params = req.method === 'POST' ? req.body : req.query;
+        const { orderId, orderAmount, orderStatus } = params;
+
+        if (!orderId) return res.status(400).send('missing orderId');
+
+        return processPaymentCallback(orderId, parseFloat(orderAmount || '0'), orderStatus, res);
     } catch (err) {
         console.error('[ERROR] 支付回调处理异常:', err.message);
         res.status(500).send('error');
     }
 });
 
-router.get('/api/payment/check/:orderId', (req, res) => {
+function processPaymentCallback(orderId, amount, status, res) {
+    const order = orderStore.get(orderId);
+    if (!order) {
+        console.error('[ERROR] 订单不存在:', orderId);
+        return res.status(404).send('order not found');
+    }
+    if (status !== 'SUCCESS') return res.send('waiting');
+    if (order.status === 'paid') return res.send('success');
+
+    const memberInfo = membership.activateMembership(order.userId, order.planId, orderId);
+    order.status = 'paid';
+    order.paidAt = Date.now();
+    order.tier = memberInfo.tier;
+    order.expiredAt = memberInfo.expiredAt;
+    orderStore.set(orderId, order);
+
+    console.log(`[SUCCESS] 会员激活: userId=${order.userId}, tier=${memberInfo.tier}`);
+    res.send('success');
+}
+
+router.get('/api/payment/check/:orderId', async (req, res) => {
     const { orderId } = req.params;
     const order = orderStore.get(orderId);
     if (!order) return res.status(404).json({ error: '订单不存在' });
-    res.json({ orderId: order.orderId, status: order.status, planId: order.planId, price: order.price, paidAt: order.paidAt || null });
+
+    // 生产模式 + 订单未支付：查询易宝确认状态
+    if (yeepay.isConfigured() && order.status === 'pending') {
+        try {
+            const result = await yeepay.queryOrder(orderId);
+            if (result.orderStatus === 'SUCCESS') {
+                const memberInfo = membership.activateMembership(order.userId, order.planId, orderId);
+                order.status = 'paid';
+                order.paidAt = Date.now();
+                order.tier = memberInfo.tier;
+                order.expiredAt = memberInfo.expiredAt;
+                orderStore.set(orderId, order);
+            }
+            return res.json({ orderId, status: order.status, ...result });
+        } catch (e) {
+            // 查询失败不影响已有状态
+        }
+    }
+
+    res.json({ orderId, status: order.status, planId: order.planId, price: order.price, paidAt: order.paidAt || null });
 });
 
 router.get('/api/membership/status', (req, res) => {
@@ -351,4 +369,3 @@ router.get('/api/membership/restrictions', (req, res) => {
 
 module.exports = router;
 module.exports.orderStore = orderStore;
-module.exports.PAY_CONFIG = PAY_CONFIG;
