@@ -13,6 +13,9 @@ python_ai/uploads/*
 python_ai/outputs/*
 node_web/public/uploads/*
 
+# User data (passwords, should NOT be in git)
+node_web/data/users/
+
 # Keep directory structure
 !python_ai/uploads/.gitkeep
 !python_ai/outputs/.gitkeep
