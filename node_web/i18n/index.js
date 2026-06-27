@@ -252,8 +252,9 @@ const translations = {
         // Membership page
         'membership.title': 'Upgrade to VIP',
         'membership.subtitle': 'Unlock premium features and get the best ID photo experience',
+        'membership.unlimited': 'VIP: Unlimited access to all features',
         'membership.current': 'Current Plan',
-        'membership.free': 'Free',
+        'membership.free': 'Free (3/day)',
         'membership.expires': 'Expires',
         'membership.never': 'Never',
         'membership.select': 'Select Plan',
@@ -524,8 +525,9 @@ const translations = {
         // Membership page
         'membership.title': '升级会员',
         'membership.subtitle': '解锁高级功能，享受最佳证件照体验',
+        'membership.unlimited': '🎉 会员用户：所有功能无限次使用',
         'membership.current': '当前套餐',
-        'membership.free': '免费版',
+        'membership.free': '免费版（每日3次）',
         'membership.expires': '到期时间',
         'membership.never': '永不过期',
         'membership.select': '选择方案',

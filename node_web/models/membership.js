@@ -3,19 +3,13 @@
  * 使用 JSON 文件存储会员状态，支持过期自动清理
  *
  * 会员等级:
- *   free         — 免费用户，功能受限
- *   single_paid  — 单次付费，24小时全功能
- *   monthly      — 月卡会员，30天全功能
- *   yearly       — 年卡会员，365天全功能
+ *   free         — 免费用户，每天3次试用
+ *   monthly      — 月卡会员，30天全功能无限次
+ *   yearly       — 年卡会员，365天全功能无限次
  *   admin        — 管理员，永久全功能
  *
- * 免费用户限制:
- *   - 高清输出 (>1080p)  ❌
- *   - 批量流水线处理      ❌
- *   - AI 背景去除         ❌
- *   - 签证/证件照尺寸      ❌
- *   - 图片 Logo 水印      ❌
- *   - 平铺水印            ❌
+ * 免费用户: 每天3次试用额度（UTC+8日期计算）
+ * 会员用户: 不限制使用所有功能
  */
 
 const fs = require('fs');
@@ -65,25 +59,6 @@ function writePaidRecords(data) {
 // ============================================
 
 const PLANS = {
-    single: {
-        id: 'single',
-        name: '单次付费',
-        price: 9.9,
-        originalPrice: 19.9,
-        durationHours: 24,
-        durationLabel: '24小时',
-        features: [
-            '全功能解锁 24 小时',
-            '高清输出 (最高 8K)',
-            'AI 智能背景去除',
-            '批量流水线处理',
-            '全部水印模式',
-            '全部尺寸预设',
-            '证件照 / 签证尺寸',
-        ],
-        color: '#6366f1',
-        popular: false,
-    },
     monthly: {
         id: 'monthly',
         name: '月卡会员',
@@ -92,12 +67,16 @@ const PLANS = {
         durationHours: 720, // 30天
         durationLabel: '30天',
         features: [
-            '单次付费全部权益',
-            '30天不限次数使用',
+            '全功能无限次使用',
+            'AI 智能背景去除无限次',
+            '高清输出 (最高 8K)',
+            '批量流水线处理',
+            '全部水印模式',
+            '全部尺寸预设',
+            '证件照 / 签证尺寸',
             '优先处理队列',
             '专属客服支持',
             '无广告纯净体验',
-            '每月赠送 100 次 AI 抠图',
         ],
         color: '#f59e0b',
         popular: true,
@@ -105,13 +84,13 @@ const PLANS = {
     yearly: {
         id: 'yearly',
         name: '年卡会员',
-        price: 199,
-        originalPrice: 399,
+        price: 29.9,
+        originalPrice: 199,
         durationHours: 8760, // 365天
         durationLabel: '365天',
         features: [
             '月卡全部权益',
-            '全年无限次使用',
+            '全年365天无限次使用',
             'API 接口访问权限',
             '新功能抢先体验',
             '专属技术支持',
@@ -126,21 +105,12 @@ const PLANS = {
 // 权限配置：各功能所需的最低会员等级
 // ============================================
 
-const FEATURE_PERMISSIONS = {
-    'resize_hd': { minTier: 'single_paid', desc: '高清输出 (>1080p)' },
-    'pipeline': { minTier: 'single_paid', desc: '批量流水线处理' },
-    'remove_background': { minTier: 'single_paid', desc: 'AI 背景去除' },
-    'visa_size': { minTier: 'single_paid', desc: '证件照/签证尺寸' },
-    'watermark_image': { minTier: 'single_paid', desc: '图片 Logo 水印' },
-    'watermark_tile': { minTier: 'single_paid', desc: '平铺水印' },
-    'batch_upload': { minTier: 'monthly', desc: '批量上传处理' },
-    'api_access': { minTier: 'yearly', desc: 'API 接口访问' },
-};
+// 免费用户每天试用次数
+const FREE_DAILY_TRIALS = 3;
 
-// 等级权重（数值越大权限越高）
+// 等级权重
 const TIER_WEIGHT = {
     'free': 0,
-    'single_paid': 1,
     'monthly': 2,
     'yearly': 3,
     'admin': 99,
@@ -179,41 +149,85 @@ function getMembership(userId) {
 }
 
 /**
- * 检查用户是否有权限使用某项功能
+ * 获取今天的日期键（UTC+8 中国时区）
  */
-function hasPermission(userId, featureKey) {
+function getTodayKey() {
+    const now = new Date();
+    // 转为北京时间
+    const bj = new Date(now.getTime() + 8 * 3600 * 1000);
+    return bj.toISOString().slice(0, 10); // YYYY-MM-DD
+}
+
+// 每日试用计数存储
+const dailyTrialStore = new Map(); // userId_today → count
+
+/**
+ * 记录一次免费试用（仅 free 用户调用）
+ * @returns {object} { allowed, used, remaining, limit }
+ */
+function recordTrial(userId) {
     const member = getMembership(userId);
-    const perm = FEATURE_PERMISSIONS[featureKey];
 
-    if (!perm) return true; // 未知功能默认允许
+    // VIP/管理员不限制
+    if (member.tier !== 'free') {
+        return { allowed: true, used: 0, remaining: Infinity, limit: Infinity };
+    }
 
-    const userWeight = TIER_WEIGHT[member.tier] || 0;
-    const requiredWeight = TIER_WEIGHT[perm.minTier] || 0;
+    const key = `${userId}_${getTodayKey()}`;
+    const used = dailyTrialStore.get(key) || 0;
 
-    return userWeight >= requiredWeight;
+    if (used >= FREE_DAILY_TRIALS) {
+        return { allowed: false, used, remaining: 0, limit: FREE_DAILY_TRIALS };
+    }
+
+    dailyTrialStore.set(key, used + 1);
+    return { allowed: true, used: used + 1, remaining: FREE_DAILY_TRIALS - used - 1, limit: FREE_DAILY_TRIALS };
 }
 
 /**
- * 获取用户受限制的功能列表
+ * 检查用户是否还有今日试用次数
+ */
+function getTrialStatus(userId) {
+    const member = getMembership(userId);
+    if (member.tier !== 'free') {
+        return { allowed: true, used: 0, remaining: Infinity, limit: Infinity, tier: member.tier };
+    }
+    const key = `${userId}_${getTodayKey()}`;
+    const used = dailyTrialStore.get(key) || 0;
+    return {
+        allowed: used < FREE_DAILY_TRIALS,
+        used,
+        remaining: Math.max(0, FREE_DAILY_TRIALS - used),
+        limit: FREE_DAILY_TRIALS,
+        tier: 'free',
+    };
+}
+
+/**
+ * 检查用户是否有权限（VIP 不限，free 看试用次数）
+ */
+function hasPermission(userId, featureKey) {
+    const member = getMembership(userId);
+    // VIP/管理员：所有功能开放
+    if (member.tier !== 'free') return true;
+    // 免费用户：不限制具体功能，用每日试用次数控制
+    return getTrialStatus(userId).allowed;
+}
+
+/**
+ * 获取用户受限制的功能列表（仅显示试用次数限制）
  */
 function getRestrictions(userId) {
     const member = getMembership(userId);
-    const restrictions = [];
+    if (member.tier !== 'free') return [];
 
-    for (const [key, perm] of Object.entries(FEATURE_PERMISSIONS)) {
-        const userWeight = TIER_WEIGHT[member.tier] || 0;
-        const requiredWeight = TIER_WEIGHT[perm.minTier] || 0;
-        if (userWeight < requiredWeight) {
-            restrictions.push({
-                key,
-                desc: perm.desc,
-                minTier: perm.minTier,
-                minTierLabel: getTierLabel(perm.minTier),
-            });
-        }
-    }
-
-    return restrictions;
+    const status = getTrialStatus(userId);
+    return [{
+        key: 'daily_trial',
+        desc: `每日免费试用 (${status.used}/${status.limit} 已用)`,
+        minTier: 'monthly',
+        minTierLabel: '月卡会员',
+    }];
 }
 
 /**
@@ -228,7 +242,7 @@ function activateMembership(userId, planId, payOrderId = '') {
 
     const members = readMembers();
     const now = Date.now();
-    const tier = planId === 'single' ? 'single_paid' : planId;
+    const tier = planId;
 
     // 如果已有会员且未过期，叠加时间
     let baseTime = now;
@@ -302,7 +316,6 @@ function createFreeMembership() {
 function getTierLabel(tier) {
     const labels = {
         'free': '免费用户',
-        'single_paid': '单次付费',
         'monthly': '月卡会员',
         'yearly': '年卡会员',
         'admin': '管理员',
@@ -316,7 +329,7 @@ function getTierWeight(tier) {
 
 function isVip(userId) {
     const member = getMembership(userId);
-    return ['single_paid', 'monthly', 'yearly', 'admin'].includes(member.tier);
+    return ['monthly', 'yearly', 'admin'].includes(member.tier);
 }
 
 /**
@@ -339,18 +352,21 @@ function getExpireDesc(userId) {
 
 module.exports = {
     PLANS,
+    FREE_DAILY_TRIALS,
     getPlans,
     getPlanById,
     getMembership,
     hasPermission,
     getRestrictions,
+    recordTrial,
+    getTrialStatus,
     activateMembership,
     generateOrderId,
     getTierLabel,
     getTierWeight,
     isVip,
     getExpireDesc,
-    FEATURE_PERMISSIONS,
     TIER_WEIGHT,
     readPaidRecords,
+    dailyTrialStore,
 };

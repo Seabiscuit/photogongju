@@ -126,14 +126,21 @@
 
     <!-- Hero 区 -->
     <section class="membership-hero">
-        <h1>开通会员，解锁全部功能</h1>
-        <p class="hero-sub">更高效、更专业的图片处理体验</p>
+        <h1><%= t('membership.title') %></h1>
+        <p class="hero-sub"><%= t('membership.subtitle') %></p>
+        <p class="hero-sub" style="font-size:0.9rem;opacity:0.85;margin-top:4px">
+            <% if (locals.isVip) { %>
+                🎉 <%= t('membership.unlimited') %>
+            <% } else { %>
+                📅 每日免费3次试用，开通会员不限次数
+            <% } %>
+        </p>
         <% if (locals.currentTier && locals.currentTier !== 'free') { %>
             <span class="current-badge <%= locals.currentTier === 'admin' ? 'badge-admin' : 'badge-vip' %>">
                 👑 当前: <%= locals.tierLabel %> · <%= locals.expireDesc %>
             </span>
         <% } else { %>
-            <span class="current-badge badge-free">当前: 免费用户</span>
+            <span class="current-badge badge-free">当前: 免费用户（每日3次）</span>
         <% } %>
     </section>
 
@@ -173,17 +180,19 @@
         </div>
     </section>
 
-    <!-- 免费用户限制提示 -->
-    <% if (!locals.isVip && locals.restrictions && locals.restrictions.length > 0) { %>
+    <!-- 免费用户试用说明 -->
     <section class="restrictions-section">
-        <h3>🔒 以下功能需要开通会员</h3>
-        <div class="restriction-list">
-            <% locals.restrictions.forEach(function(r) { %>
-                <span class="restriction-tag"><%= r.desc %></span>
-            <% }); %>
-        </div>
+        <h3>
+            <% if (locals.isVip) { %>
+                ✅ 会员用户：所有功能无限制使用
+            <% } else { %>
+                📅 免费用户：每日可试用 <strong>3次</strong>，开通会员不限次数
+            <% } %>
+        </h3>
+        <p style="color:#64748b;margin-top:4px;font-size:0.9rem;">
+            AI智能抠图、高清证件照、批量处理、水印引擎、证件照换底色 — 全部功能均可使用
+        </p>
     </section>
-    <% } %>
 
     <!-- 支付弹窗 -->
     <div class="pay-modal-overlay" id="payModal">

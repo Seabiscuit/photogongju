@@ -306,6 +306,7 @@ router.get('/api/payment/check/:orderId', (req, res) => {
 
 router.get('/api/membership/status', (req, res) => {
     const member = membership.getMembership(req.userId);
+    const trial = membership.getTrialStatus(req.userId);
     res.json({
         success: true, tier: member.tier,
         tierLabel: membership.getTierLabel(member.tier),
@@ -314,7 +315,29 @@ router.get('/api/membership/status', (req, res) => {
         expiredAt: member.expiredAt || 0,
         expireDesc: membership.getExpireDesc(req.userId),
         remainingMs: Math.max(0, (member.expiredAt || 0) - Date.now()),
+        dailyTrial: {
+            limit: trial.limit,
+            used: trial.used,
+            remaining: trial.remaining,
+        },
     });
+});
+
+/**
+ * 消耗一次试用额度（供各 api 调用前检查）
+ * POST /api/trial/use
+ */
+router.post('/api/trial/use', express.json(), (req, res) => {
+    const result = membership.recordTrial(req.userId);
+    if (!result.allowed) {
+        return res.status(403).json({
+            error: '今日免费试用次数已用完',
+            code: 'TRIAL_EXHAUSTED',
+            ...result,
+            redirect: '/membership',
+        });
+    }
+    res.json({ success: true, ...result });
 });
 
 router.get('/api/membership/restrictions', (req, res) => {
