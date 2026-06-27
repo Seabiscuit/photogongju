@@ -124,52 +124,44 @@ ls -lh u2net.onnx
 
 ---
 
-## 第五步：配置Supervisor进程守护
+## 第五步：配置进程守护（宝塔面板）
 
-宝塔面板 → 软件商店 → **进程守护管理器** → 设置 → 添加守护进程。
+> 项目提供了两个启动脚本，直接用在宝塔「进程守护管理器」中。
+
+先给脚本添加执行权限：
+
+```bash
+chmod +x /opt/photogongju/deploy/scripts/start-node.sh
+chmod +x /opt/photogongju/deploy/scripts/start-python.sh
+```
 
 ### 5.1 Node.js 主站守护
+
+宝塔面板 → 软件商店 → **进程守护管理器** → 添加守护进程：
 
 | 字段 | 值 |
 |------|-----|
 | 名称 | `photogongju-node` |
-| 启动用户 | `root` (或 `www`) |
+| 启动用户 | `root` |
 | 运行目录 | `/opt/photogongju/node_web` |
-| 启动命令 | `/usr/bin/node /opt/photogongju/node_web/app.js` |
+| **启动文件** | `/opt/photogongju/deploy/scripts/start-node.sh` |
 | 进程数 | 1 |
 
-或者通过命令行配置：
-
-```bash
-# 复制Supervisor配置文件
-sudo cp /opt/photogongju/deploy/supervisor/photogongju-node.conf \
-    /etc/supervisor/conf.d/
-
-sudo supervisorctl reread
-sudo supervisorctl update
-sudo supervisorctl start photogongju-node
-```
+> 📁 在宝塔 UI 中点击「选择」→ 导航到 `/opt/photogongju/deploy/scripts/` → 选择 `start-node.sh`
 
 ### 5.2 Python AI 服务守护
+
+宝塔面板 → 软件商店 → **进程守护管理器** → 添加守护进程：
 
 | 字段 | 值 |
 |------|-----|
 | 名称 | `photogongju-python` |
 | 启动用户 | `root` |
 | 运行目录 | `/opt/photogongju/python_ai` |
-| 启动命令 | `/opt/photogongju/python_ai/venv/bin/uvicorn main:app --host 127.0.0.1 --port 8001 --workers 2 --log-level info` |
+| **启动文件** | `/opt/photogongju/deploy/scripts/start-python.sh` |
 | 进程数 | 1 |
 
-或者：
-
-```bash
-sudo cp /opt/photogongju/deploy/supervisor/photogongju-python.conf \
-    /etc/supervisor/conf.d/
-
-sudo supervisorctl reread
-sudo supervisorctl update
-sudo supervisorctl start photogongju-python
-```
+> 📁 在宝塔 UI 中点击「选择」→ 导航到 `/opt/photogongju/deploy/scripts/` → 选择 `start-python.sh`
 
 ### 5.3 验证服务启动
 
