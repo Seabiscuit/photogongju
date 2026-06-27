@@ -62,8 +62,8 @@ const PLANS = {
     monthly: {
         id: 'monthly',
         name: '月卡会员',
-        price: 29.9,
-        originalPrice: 59.9,
+        price: 9.9,
+        originalPrice: 29.9,
         durationHours: 720, // 30天
         durationLabel: '30天',
         features: [
@@ -84,7 +84,7 @@ const PLANS = {
     yearly: {
         id: 'yearly',
         name: '年卡会员',
-        price: 29.9,
+        price: 59.9,
         originalPrice: 199,
         durationHours: 8760, // 365天
         durationLabel: '365天',
