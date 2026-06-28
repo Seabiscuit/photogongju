@@ -119,6 +119,14 @@
     const uploadBtn = document.getElementById('uploadBtn');
     const uploadPlaceholder = document.querySelector('.upload-placeholder');
 
+    // 预览区域元素
+    const previewSection = document.getElementById('previewSection');
+    const previewInfo = document.getElementById('previewInfo');
+    const previewOverlay = document.getElementById('previewOverlay');
+    const previewStatus = document.getElementById('previewStatus');
+    const previewLabel = document.getElementById('previewLabel');
+    const downloadResultBtn = document.getElementById('downloadResultBtn');
+
     const resizeBtn = document.getElementById('resizeBtn');
     const filterBtn = document.getElementById('filterBtn');
     const watermarkBtn = document.getElementById('watermarkBtn');
@@ -328,12 +336,53 @@
             preview.src = e.target.result;
             preview.style.display = 'block';
             if (uploadPlaceholder) uploadPlaceholder.style.display = 'none';
+            // 显示预览区域
+            if (previewSection) {
+                previewSection.style.display = 'block';
+                previewLabel.textContent = '原始图片';
+                previewLabel.className = 'preview-label';
+                downloadResultBtn.style.display = 'none';
+                previewOverlay.style.display = 'none';
+            }
+            if (previewInfo) {
+                const w = file.width || '—';
+                const h = file.height || '—';
+                const size = (file.size / 1024).toFixed(1);
+                previewInfo.textContent = `${file.type.split('/')[1]?.toUpperCase() || '?'} · ${size} KB`;
+            }
         };
         reader.readAsDataURL(file);
 
         // 启用按钮
         uploadBtn.disabled = false;
         uploadBtn.textContent = '⬆️ 上传图片';
+    }
+
+    /** 显示预览加载状态 */
+    function showPreviewLoading(msg) {
+        if (previewOverlay) { previewOverlay.style.display = 'flex'; }
+        if (previewStatus) { previewStatus.textContent = msg || '处理中...'; }
+    }
+
+    /** 隐藏预览加载 */
+    function hidePreviewLoading() {
+        if (previewOverlay) { previewOverlay.style.display = 'none'; }
+    }
+
+    /** 更新预览为处理结果 */
+    function updatePreviewResult(taskId, label) {
+        if (!taskId || !preview) return;
+        preview.src = `/api/proxy-image/${taskId}?t=${Date.now()}`;
+        if (previewSection) {
+            previewSection.style.display = 'block';
+            if (previewLabel) {
+                previewLabel.textContent = label || '处理结果';
+                previewLabel.className = 'preview-label preview-label--processed';
+            }
+            if (downloadResultBtn) downloadResultBtn.style.display = 'inline-flex';
+        }
+        hidePreviewLoading();
+        if (previewInfo) previewInfo.textContent = '';
     }
 
     // ============================================
@@ -428,7 +477,7 @@
             mode: document.getElementById('resizeMode')?.value || 'fit',
             background: document.getElementById('resizeBg')?.value || '#FFFFFF',
             upscale: document.getElementById('resizeUpscale')?.checked ?? true,
-        }));
+        }, '缩放结果'));
     }
 
     // ============================================
@@ -438,7 +487,7 @@
         filterBtn.addEventListener('click', () => handleProcess('filter', {
             filter_type: document.getElementById('filterType')?.value || 'grayscale',
             intensity: parseFloat(document.getElementById('filterIntensity')?.value || 0.5),
-        }));
+        }, '滤镜结果'));
     }
 
     // ============================================
@@ -466,7 +515,7 @@
                 formData.append('image_scale', document.getElementById('wmScale')?.value || '0.2');
             }
 
-            handleProcessMultipart('watermark', formData);
+            handleProcessMultipart('watermark', formData, '水印结果');
         });
     }
 
@@ -477,7 +526,7 @@
         removeBgBtn.addEventListener('click', () => handleProcess('remove-background', {
             model: 'rmbg_onnx',
             alpha_matting: document.getElementById('alphaMatting')?.checked || false,
-        }));
+        }, '抠图结果'));
     }
 
     // ============================================
@@ -518,19 +567,20 @@
             pipeParams.output_format = document.getElementById('outputFormat')?.value || 'png';
             pipeParams.quality = 85;
 
-            handleProcess('pipeline', pipeParams);
+            handleProcess('pipeline', pipeParams, '批量处理结果');
         });
     }
 
     // ============================================
     // 通用处理函数（JSON 模式）
     // ============================================
-    async function handleProcess(endpoint, params) {
+    async function handleProcess(endpoint, params, label) {
         if (!currentTaskId) {
             showNotification('error', '请先上传图片');
             return;
         }
 
+        showPreviewLoading('处理中...');
         try {
             const res = await fetch(`/api/${endpoint}/${currentTaskId}`, {
                 method: 'POST',
@@ -540,11 +590,14 @@
             const data = await res.json();
 
             if (data.success && data.task_id) {
+                updatePreviewResult(data.task_id, label || '处理结果');
                 showNotification('success', data.message || '处理完成！', data.task_id);
             } else {
+                hidePreviewLoading();
                 showNotification('error', data.detail || data.error || '处理失败');
             }
         } catch (err) {
+            hidePreviewLoading();
             showNotification('error', '请求失败: ' + err.message);
         }
     }
@@ -552,12 +605,13 @@
     // ============================================
     // 通用处理函数（Multipart 模式 — 水印等需要上传文件的场景）
     // ============================================
-    async function handleProcessMultipart(endpoint, formData) {
+    async function handleProcessMultipart(endpoint, formData, label) {
         if (!currentTaskId) {
             showNotification('error', '请先上传图片');
             return;
         }
 
+        showPreviewLoading('处理中...');
         try {
             const res = await fetch(`/api/${endpoint}/${currentTaskId}`, {
                 method: 'POST',
@@ -566,11 +620,14 @@
             const data = await res.json();
 
             if (data.success && data.task_id) {
+                updatePreviewResult(data.task_id, label || '处理结果');
                 showNotification('success', data.message || '处理完成！', data.task_id);
             } else {
+                hidePreviewLoading();
                 showNotification('error', data.detail || data.error || '处理失败');
             }
         } catch (err) {
+            hidePreviewLoading();
             showNotification('error', '请求失败: ' + err.message);
         }
     }
@@ -707,6 +764,15 @@
             s.parentNode.insertBefore(hm, s);
         })();
     }
+
+    // ═══════════════════════════════════════════════════
+    // ★ 下载当前预览结果
+    // ═══════════════════════════════════════════════════
+    window.downloadResult = function () {
+        if (currentTaskId) {
+            window.open('/api/proxy-image/' + currentTaskId + '?download=1', '_blank');
+        }
+    };
 
     // ═══════════════════════════════════════════════════
     // ★ 初始化所有优化

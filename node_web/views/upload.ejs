@@ -90,7 +90,7 @@
             </div>
 
             <div class="upload-layout">
-                <!-- 左侧：上传区域 -->
+                <!-- 左侧：上传区域 + 预览 -->
                 <div class="upload-panel">
                     <div class="upload-zone" id="uploadZone">
                         <div class="upload-placeholder">
@@ -99,7 +99,6 @@
                             <p class="upload-hint">支持 JPG / PNG / WEBP / BMP，最大 50MB</p>
                         </div>
                         <input type="file" id="fileInput" accept="image/*" hidden>
-                        <img id="preview" class="preview-image" style="display:none" alt="预览">
                     </div>
 
                     <!-- 上传进度 -->
@@ -113,6 +112,27 @@
                     <button class="btn btn-primary btn-block" id="uploadBtn" disabled>
                         ⬆️ 上传图片
                     </button>
+
+                    <!-- ★ 图片预览框 -->
+                    <div class="preview-section" id="previewSection" style="display:none">
+                        <div class="preview-header">
+                            <h4>📷 图片预览</h4>
+                            <span class="preview-info" id="previewInfo"></span>
+                        </div>
+                        <div class="preview-box">
+                            <img id="preview" class="preview-image" alt="预览图片">
+                            <div class="preview-overlay" id="previewOverlay" style="display:none">
+                                <div class="preview-spinner"></div>
+                                <span class="preview-status" id="previewStatus">处理中...</span>
+                            </div>
+                        </div>
+                        <div class="preview-actions">
+                            <span class="preview-label" id="previewLabel">原始图片</span>
+                            <button class="btn btn-sm btn-outline" id="downloadResultBtn" style="display:none" onclick="downloadResult()">
+                                💾 下载结果
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- 右侧：处理选项面板 -->
